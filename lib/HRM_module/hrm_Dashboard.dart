@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hrmodules/HRM_module/dashBoard_View.dart';
 
 class HRM_Module extends StatefulWidget {
   const HRM_Module({super.key});
@@ -156,7 +158,11 @@ class _HRM_ModuleState extends State<HRM_Module> {
                     }),
               ),
             ),
-            Flexible(flex: 8, child: Text("cfhdecf")),
+            SizedBox(
+              height: 20,
+            ),
+            Flexible(flex: 8,
+                child: DashBoard_View()),
           ],
         ),
       ),

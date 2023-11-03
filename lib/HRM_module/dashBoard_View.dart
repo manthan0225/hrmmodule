@@ -20,65 +20,69 @@ class _DashBoard_ViewState extends State<DashBoard_View> {
             Flexible(
               child:
                 Container(
-                  height: Get.height * .15,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 4,
-                        itemBuilder: (BuildContext context, int index) =>
-                            Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Container(
-                            padding: EdgeInsets.all(Get.height * .02),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                                borderRadius: BorderRadius.circular(8)
-                            ),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: Get.height * .02,
-                                ),
-                                Row(
-                                  children: [
-                                    Text("Total Employees",
+                  height: Get.height * .23,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 4,
+                          itemBuilder: (BuildContext context, int index) =>
+                              Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Container(
+                              padding: EdgeInsets.all(Get.height * .03),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8)
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: Get.height * .02,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text("Total Employees",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: Get.height * .05,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text("353",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),),
+                                      SizedBox(width: Get.width * .01,),
+                                      Icon(Icons.arrow_upward,
+                                      color: Colors.green,),
+                                      Text("+15%",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                          color: Colors.green
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: Get.height * .02,
-                                ),
-                                Row(
-                                  children: [
-                                    Text("353",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),),
-                                    SizedBox(width: Get.width * .01,),
-                                    Icon(Icons.arrow_upward,
-                                    color: Colors.green,),
-                                    Text("+15%",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: Colors.green
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
             ),
