@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hrmodules/HRM_module/hrm_Dashboard.dart';
 
 void main(){
@@ -16,9 +17,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return  GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       home: HRM_Module(),
     );
   }
 }
-
