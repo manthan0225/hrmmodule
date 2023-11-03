@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hrmodules/HRM_module/dashBoard_View.dart';
 
 class HRM_Module extends StatefulWidget {
   const HRM_Module({super.key});
@@ -10,6 +11,6 @@ class HRM_Module extends StatefulWidget {
 class _HRM_ModuleState extends State<HRM_Module> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return DashBoard_View();
   }
 }
