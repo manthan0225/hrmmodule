@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:hrmodules/HRM_module/hrm_Dashboard.dart';
 
 void main(){
@@ -23,3 +22,4 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
