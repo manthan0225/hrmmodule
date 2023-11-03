@@ -69,7 +69,8 @@ class _DashBoard_ViewState extends State<DashBoard_View> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15,
                                         color: Colors.green
-                                      ),),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ],
