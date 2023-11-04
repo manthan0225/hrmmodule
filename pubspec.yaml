@@ -36,6 +36,7 @@ dependencies:
   circular_chart_flutter: ^0.0.2
   table_calendar: ^3.0.9
   syncfusion_flutter_charts: ^23.1.43
+  graphview: any
 
 dev_dependencies:
   flutter_test:

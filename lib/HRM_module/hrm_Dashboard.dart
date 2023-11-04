@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hrmodules/HRM_module/dashBoard_View.dart';
+import 'package:hrmodules/HRM_module/hrm_Tree.dart';
 
 class HRM_Module extends StatefulWidget {
   const HRM_Module({super.key});
@@ -12,7 +13,7 @@ class HRM_Module extends StatefulWidget {
 class _HRM_ModuleState extends State<HRM_Module> {
   bool isDark = false;
   final List<String> item = [
-    "Deshboard",
+    "Dashboard",
     "Team",
     "Tree",
     "Consultant",
@@ -20,7 +21,8 @@ class _HRM_ModuleState extends State<HRM_Module> {
     "Reports",
     "Leaves",
   ];
-  int selectedIdx = -1;
+
+  int selectedIdx = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -112,48 +114,45 @@ class _HRM_ModuleState extends State<HRM_Module> {
                     scrollDirection: Axis.horizontal,
                     itemCount: item.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return Row(
-                        children: [
-                          SizedBox(
-                            width: Get.width * .05,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                selectedIdx = index;
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Center(
-                                child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 13, vertical: 12),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: selectedIdx == index
-                                          ? Colors.black54
-                                          : Colors.deepOrangeAccent.shade100,
-                                    ),
-                                    child: Text(
-                                      "${item[index]}",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                        child: Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  selectedIdx = index;
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 13, vertical: 12),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
                                         color: selectedIdx == index
-                                            ? Colors.white
-                                            : Colors.black,
+                                            ? Colors.black54
+                                            : Colors.deepOrangeAccent.shade100,
                                       ),
-                                    )),
+                                      child: Text(
+                                        "${item[index]}",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: selectedIdx == index
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      )),
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            width: Get.width * .05,
-                          )
-                        ],
+                          ],
+                        ),
                       );
                     }),
               ),
@@ -162,10 +161,23 @@ class _HRM_ModuleState extends State<HRM_Module> {
               height: 20,
             ),
             Flexible(flex: 8,
-                child: DashBoard_View()),
+                child: pageRoute(selectedIdx)),
           ],
         ),
       ),
     );
+  }
+
+  pageRoute(int selectedIndex){
+    switch(selectedIndex){
+      case 1:
+        return DashBoard_View();
+
+      case 2 :
+        return TreeViewPage();
+
+      default :
+        return DashBoard_View();
+    }
   }
 }
