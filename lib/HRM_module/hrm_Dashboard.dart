@@ -4,7 +4,7 @@ import 'package:hrmodules/HRM_module/dashBoard_View.dart';
 import 'package:hrmodules/HRM_module/hrm_Tree.dart';
 
 class HRM_Module extends StatefulWidget {
-  const HRM_Module({super.key});
+  const HRM_Module({Key? key}) : super(key: key);
 
   @override
   State<HRM_Module> createState() => _HRM_ModuleState();
@@ -54,8 +54,7 @@ class _HRM_ModuleState extends State<HRM_Module> {
                     SizedBox(
                       width: Get.height * 0.5,
                       child: SearchAnchor(
-                        builder:
-                            (BuildContext context, SearchController controller) {
+                        builder: (BuildContext context, SearchController controller) {
                           return SearchBar(
                             controller: controller,
                             onTap: () {
@@ -75,18 +74,17 @@ class _HRM_ModuleState extends State<HRM_Module> {
                                       isDark = !isDark;
                                     });
                                   },
-                                  icon: const Icon(Icons.wb_sunny_outlined,
-                                      size: 25),
+                                  icon: const Icon(Icons.wb_sunny_outlined, size: 25),
                                   selectedIcon: const Icon(
-                                      Icons.brightness_2_outlined,
-                                      size: 25),
+                                    Icons.brightness_2_outlined,
+                                    size: 25,
+                                  ),
                                 ),
                               )
                             ],
                           );
                         },
-                        suggestionsBuilder:
-                            (BuildContext context, SearchController controller) {
+                        suggestionsBuilder: (BuildContext context, SearchController controller) {
                           return List<ListTile>.generate(5, (int index) {
                             final String item = 'item $index';
                             return ListTile(
@@ -110,74 +108,96 @@ class _HRM_ModuleState extends State<HRM_Module> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: item.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                        child: Row(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  selectedIdx = index;
-                                });
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Center(
-                                  child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 13, vertical: 12),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: selectedIdx == index
-                                            ? Colors.black54
-                                            : Colors.deepOrangeAccent.shade100,
-                                      ),
-                                      child: Text(
-                                        "${item[index]}",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: selectedIdx == index
-                                              ? Colors.white
-                                              : Colors.black,
-                                        ),
-                                      )),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: item.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                selectedIdx = index;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: selectedIdx == index
+                                        ? Colors.black54
+                                        : Colors.deepOrangeAccent.shade100,
+                                  ),
+                                  child: Text(
+                                    "${item[index]}",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: selectedIdx == index ? Colors.white : Colors.black,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      );
-                    }),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             SizedBox(
               height: 20,
             ),
-            Flexible(flex: 8,
-                child: pageRoute(selectedIdx)),
+            Flexible(
+              flex: 8,
+              child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 500),
+                transitionBuilder: (child, animation) {
+                  return ScaleTransition(
+                    scale: animation,
+                    child: child,
+                  );
+                },
+                child: pageRoute(selectedIdx),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  pageRoute(int selectedIndex){
-    switch(selectedIndex){
+  Widget pageRoute(int selectedIndex) {
+    switch (selectedIndex) {
       case 1:
         return DashBoard_View();
-
-      case 2 :
+      case 2:
         return TreeViewPage();
-
-      default :
+      default:
         return DashBoard_View();
     }
   }
+  PageRouteBuilder buildFadeRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
+  }
+
 }
+
+
