@@ -34,8 +34,7 @@ class LeaveData {
   });
 }
 
-class EmpName
-{
+class EmpName {
   String name;
   String post;
   String image;
@@ -44,6 +43,5 @@ class EmpName
     required this.name,
     required this.post,
     required this.image,
-
   });
 }

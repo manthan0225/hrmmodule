@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hrmodules/HRM_module/hrm_Dashboard.dart';
 
-void main(){
+void main() {
   runApp(MyApp());
 }
 
@@ -17,10 +17,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return  GetMaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: HRM_Module(),
     );
   }
 }
-

@@ -47,9 +47,56 @@ class _HRM_ModuleState extends State<HRM_Module> {
                     SizedBox(
                       width: 10,
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.notifications, size: 25),
+                    MenuAnchor(
+                      builder: (BuildContext context, MenuController controller,
+                          Widget? child) {
+                        return IconButton(
+                          onPressed: () {
+                            if (controller.isOpen) {
+                              controller.close();
+                            } else {
+                              controller.open();
+                            }
+                          },
+                          icon: Icon(Icons.notifications, size: 25),
+                        );
+                      },
+                      menuChildren: List<MenuItemButton>.generate(
+                        item.length,
+                        (int index) => MenuItemButton(
+                            onPressed: () {},
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: Get.height * 0.01,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    CircleAvatar(
+                                      child: Icon(Icons.person),
+                                    ),
+                                    SizedBox(
+                                      width: Get.width * 0.02,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Mansi"),
+                                        Text("manthanvcfhecfbhbcujfnujnc"),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+
+                                SizedBox(
+                                  height: Get.height * 0.01,
+                                ),
+                              ],
+                            )),
+                      ),
                     ),
                     SizedBox(
                       width: 10,
@@ -57,7 +104,8 @@ class _HRM_ModuleState extends State<HRM_Module> {
                     SizedBox(
                       width: Get.height * 0.5,
                       child: SearchAnchor(
-                        builder: (BuildContext context, SearchController controller) {
+                        builder: (BuildContext context,
+                            SearchController controller) {
                           return SearchBar(
                             controller: controller,
                             onTap: () {
@@ -77,7 +125,8 @@ class _HRM_ModuleState extends State<HRM_Module> {
                                       isDark = !isDark;
                                     });
                                   },
-                                  icon: const Icon(Icons.wb_sunny_outlined, size: 25),
+                                  icon: const Icon(Icons.wb_sunny_outlined,
+                                      size: 25),
                                   selectedIcon: const Icon(
                                     Icons.brightness_2_outlined,
                                     size: 25,
@@ -87,7 +136,8 @@ class _HRM_ModuleState extends State<HRM_Module> {
                             ],
                           );
                         },
-                        suggestionsBuilder: (BuildContext context, SearchController controller) {
+                        suggestionsBuilder: (BuildContext context,
+                            SearchController controller) {
                           return List<ListTile>.generate(5, (int index) {
                             final String item = 'item $index';
                             return ListTile(
@@ -132,7 +182,8 @@ class _HRM_ModuleState extends State<HRM_Module> {
                               ),
                               child: Center(
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 12),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 13, vertical: 12),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     color: selectedIdx == index
@@ -143,7 +194,9 @@ class _HRM_ModuleState extends State<HRM_Module> {
                                     "${item[index]}",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: selectedIdx == index ? Colors.white : Colors.black,
+                                      color: selectedIdx == index
+                                          ? Colors.white
+                                          : Colors.black,
                                     ),
                                   ),
                                 ),
@@ -189,6 +242,7 @@ class _HRM_ModuleState extends State<HRM_Module> {
         return DashBoard_View();
     }
   }
+
   PageRouteBuilder buildFadeRoute(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
@@ -200,7 +254,4 @@ class _HRM_ModuleState extends State<HRM_Module> {
       },
     );
   }
-
 }
-
-
