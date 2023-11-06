@@ -33,3 +33,17 @@ class LeaveData {
     required this.reas,
   });
 }
+
+class EmpName
+{
+  String name;
+  String post;
+  String image;
+
+  EmpName({
+    required this.name,
+    required this.post,
+    required this.image,
+
+  });
+}

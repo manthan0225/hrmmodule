@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hrmodules/HRM_module/chat_viewpage.dart';
 import 'package:hrmodules/HRM_module/dashBoard_View.dart';
 import 'package:hrmodules/HRM_module/hrm_Tree.dart';
 
@@ -38,7 +39,9 @@ class _HRM_ModuleState extends State<HRM_Module> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.dialog(Chat_ViewPage());
+                      },
                       icon: Icon(Icons.message, size: 25),
                     ),
                     SizedBox(
