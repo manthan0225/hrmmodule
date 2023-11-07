@@ -35,13 +35,22 @@ class LeaveData {
 }
 
 class EmpName {
-  String name;
-  String post;
-  String image;
+  final String uid;
+ final String name;
+  final String email;
+  final String image;
+  final DateTime lastActive;
+  final bool isOnline;
+
+
 
   EmpName({
     required this.name,
-    required this.post,
     required this.image,
+    required this.uid,
+    required this.email,
+    required this.lastActive,
+    this.isOnline = false,
+
   });
 }

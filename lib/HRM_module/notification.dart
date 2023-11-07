@@ -12,8 +12,8 @@ class _Notification_dataState extends State<Notification_data> {
   @override
   Widget build(BuildContext context) {
     return MenuAnchor(
-      builder: (BuildContext context, MenuController controller,
-          Widget? child) {
+      builder:
+          (BuildContext context, MenuController controller, Widget? child) {
         return IconButton(
           onPressed: () {
             if (controller.isOpen) {
@@ -27,7 +27,7 @@ class _Notification_dataState extends State<Notification_data> {
       },
       menuChildren: List<MenuItemButton>.generate(
         10,
-            (int index) => MenuItemButton(
+        (int index) => MenuItemButton(
             onPressed: () {},
             child: Column(
               children: [
@@ -35,12 +35,12 @@ class _Notification_dataState extends State<Notification_data> {
                   height: Get.height * 0.01,
                 ),
                 Row(
-                  mainAxisAlignment:
-                  MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     CircleAvatar(
                       backgroundColor: Colors.deepOrangeAccent.shade100,
-                      child: Icon(Icons.person,
+                      child: Icon(
+                        Icons.person,
                         color: Colors.black12,
                       ),
                     ),
@@ -48,8 +48,7 @@ class _Notification_dataState extends State<Notification_data> {
                       width: Get.width * 0.02,
                     ),
                     Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Update Notification",
@@ -57,13 +56,11 @@ class _Notification_dataState extends State<Notification_data> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
-                            " people may not remember your app"),
+                        Text(" people may not remember your app"),
                       ],
                     ),
                   ],
                 ),
-
                 SizedBox(
                   height: Get.height * 0.01,
                 ),
