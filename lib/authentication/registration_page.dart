@@ -148,7 +148,6 @@ class _Registration_pageState extends State<Registration_page> {
                   ),
                   InkWell(
                     onTap: () {
-
                       signUp();
                       register_services.resgidterData(
                           namecontroller.text.toString(),
