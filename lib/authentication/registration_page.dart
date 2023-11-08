@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:hrmodules/HRM_module/dashBoard_View.dart';
 import 'package:hrmodules/HRM_module/hrm_Dashboard.dart';
 import 'package:hrmodules/authentication/login_page.dart';
+import 'package:hrmodules/services/auth_service.dart';
+import 'package:hrmodules/services/register_services.dart';
+import 'package:provider/provider.dart';
 
 class Registration_page extends StatefulWidget {
   const Registration_page({super.key});
@@ -13,11 +15,30 @@ class Registration_page extends StatefulWidget {
 }
 
 class _Registration_pageState extends State<Registration_page> {
+
+
+  void signUp() async {
+    final authServices = Provider.of<AuthServices>(context, listen: false);
+
+    try {
+      await authServices.signUpWithEmailandPassword(
+          emailcontroller.text.toString(), passwordcontroller.text.toString());
+
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+
   TextEditingController namecontroller = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordcontroller = TextEditingController();
   TextEditingController mobilecontroller = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+
+  TextEditingController passwordcontroller = TextEditingController();
+  TextEditingController emailcontroller = TextEditingController();
+
+  Register_Services register_services = Register_Services();
+
   bool isHidden = true;
   @override
   Widget build(BuildContext context) {
@@ -74,7 +95,7 @@ class _Registration_pageState extends State<Registration_page> {
                   SizedBox(
                     width: Get.width * 0.3,
                     child: TextField(
-                      controller: emailController,
+                      controller: emailcontroller,
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Email Address',
@@ -106,7 +127,7 @@ class _Registration_pageState extends State<Registration_page> {
                   SizedBox(
                     width: Get.width * 0.3,
                     child: TextField(
-                      controller: passwordController,
+                      controller: passwordcontroller,
                       obscureText: isHidden,
                       decoration: InputDecoration(
                           border: const OutlineInputBorder(),
@@ -127,8 +148,13 @@ class _Registration_pageState extends State<Registration_page> {
                   ),
                   InkWell(
                     onTap: () {
+                      signUp();
+                      register_services.resgidterData(
+                          namecontroller.text.toString(),
+                          emailcontroller.text.toString(),
+                          passwordcontroller.text.toString(),
+                          mobilecontroller.text.toString());
                       Get.to(HRM_Module());
-
                     },
                     child: Container(
                       decoration: const BoxDecoration(
@@ -154,7 +180,7 @@ class _Registration_pageState extends State<Registration_page> {
 
                   RichText(
                     text: TextSpan(
-                      text: "Alredy have an account ?  ? ",
+                      text: "Alredy have an account ?? ",
                       style: TextStyle(
                         fontSize: 15,
                       ),
@@ -162,10 +188,7 @@ class _Registration_pageState extends State<Registration_page> {
                         WidgetSpan(
                           child: InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Login_Page()),
-                              );
+                              Get.to(Login_Page());
                             },
                             child: Text(
                               "Login Now",

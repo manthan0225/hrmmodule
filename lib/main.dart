@@ -1,6 +1,7 @@
 import 'dart:js';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,6 +33,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    _initializeFirebase();
+    super.initState();
+  }
+
+  _initializeFirebase() async {
+    await Firebase.initializeApp();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -41,3 +54,4 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
