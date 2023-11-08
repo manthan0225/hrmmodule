@@ -6,7 +6,9 @@ import 'package:get/get.dart';
 import 'package:hrmodules/HRM_module/hrm_Dashboard.dart';
 import 'package:hrmodules/authentication/login_page.dart';
 import 'package:hrmodules/services/auth_service.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 class Registration_page extends StatefulWidget {
   const Registration_page({super.key});
@@ -16,8 +18,8 @@ class Registration_page extends StatefulWidget {
 }
 
 class _Registration_pageState extends State<Registration_page> {
-
   final datarefrence = FirebaseDatabase.instance.reference();
+  XFile? selectedImage;
 
   void signUp() async {
     final authServices = Provider.of<AuthServices>(context, listen: false);
@@ -28,12 +30,9 @@ class _Registration_pageState extends State<Registration_page> {
     String mobile = mobilecontroller.text.toString();
     String password = passwordcontroller.text.toString();
 
-
-    // Regular expressions for email format validation
     final emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
     final passwordRegExp = RegExp(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$');
 
-    // Check if any of the fields are empty
     if (name.isEmpty || email.isEmpty || mobile.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -65,10 +64,8 @@ class _Registration_pageState extends State<Registration_page> {
         ),
       );
     } else {
-      // Attempt to sign up with the provided data
       try {
         await authServices.signUpWithEmailandPassword(email, password);
-        // You can add additional logic here to save user data or perform other actions upon successful registration.
         Get.to(HRM_Module());
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -81,33 +78,27 @@ class _Registration_pageState extends State<Registration_page> {
     }
   }
 
-  int resgidterData(String name,String email,String password,String mobile){
-
+  int resgidterData(String name, String email, String password, String mobile) {
     final key = datarefrence.child("Users").push().key;
 
     datarefrence.child("Users").child(key!).set({
-      'id' : key,
-      'name' : name,
-      'email' :email,
-      'password' : password,
-      'mobile' : mobile
+      'id': key,
+      'name': name,
+      'email': email,
+      'password': password,
+      'mobile': mobile
     });
 
     return 1;
-
   }
-
-
-
 
   TextEditingController namecontroller = TextEditingController();
   TextEditingController mobilecontroller = TextEditingController();
-
   TextEditingController passwordcontroller = TextEditingController();
   TextEditingController emailcontroller = TextEditingController();
 
-
   bool isHidden = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,164 +113,159 @@ class _Registration_pageState extends State<Registration_page> {
           ),
           Expanded(
             flex: 50,
-              child:Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.network(
-                    "https://miro.medium.com/v2/resize:fit:740/0*-Vyqq7BQ0GYbOGZW.jpg",
-                    height: Get.height * 0.2,
-                    width: Get.width * 0.2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                imageprofile(),
+                SizedBox(
+                  height: Get.height * 0.01,
+                ),
+                Text(
+                  "Register",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.indigo,
                   ),
-                  SizedBox(
-                    height: Get.height * 0.01,
+                ),
+                SizedBox(
+                  height: Get.height * 0.03,
+                ),
+                SizedBox(
+                  width: Get.width * 0.3,
+                  child: TextField(
+                    controller: namecontroller,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Full Name',
+                        suffixIcon: Icon(
+                          FontAwesomeIcons.person,
+                          size: 17,
+                        )),
                   ),
-                  Text("Register",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                ),
+                SizedBox(
+                  height: Get.height * 0.05,
+                ),
+                SizedBox(
+                  width: Get.width * 0.3,
+                  child: TextField(
+                    controller: emailcontroller,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Email Address',
+                        suffixIcon: Icon(
+                          FontAwesomeIcons.envelope,
+                          size: 17,
+                        )),
+                  ),
+                ),
+                SizedBox(
+                  height: Get.height * 0.05,
+                ),
+                SizedBox(
+                  width: Get.width * 0.3,
+                  child: TextField(
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    maxLength: 10,
+                    keyboardType: TextInputType.number,
+                    controller: mobilecontroller,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Mobile Number',
+                        counterText: '',
+                        suffixIcon: Icon(
+                          FontAwesomeIcons.mobile,
+                          size: 17,
+                        )),
+                  ),
+                ),
+                SizedBox(
+                  height: Get.height * 0.05,
+                ),
+                SizedBox(
+                  width: Get.width * 0.3,
+                  child: TextField(
+                    controller: passwordcontroller,
+                    obscureText: isHidden,
+                    decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        labelText: 'Password',
+                        suffixIcon: InkWell(
+                          onTap: () {
+                            togglePasswordView();
+                          },
+                          child: const Icon(
+                            FontAwesomeIcons.eyeSlash,
+                            size: 15,
+                          ),
+                        )),
+                  ),
+                ),
+                SizedBox(
+                  height: Get.height * 0.05,
+                ),
+                InkWell(
+                  onTap: () {
+                    signUp();
+                    final result = resgidterData(
+                        namecontroller.text.toString(),
+                        emailcontroller.text.toString(),
+                        passwordcontroller.text.toString(),
+                        mobilecontroller.text.toString());
+
+                    if (result == 1) {
+                      Get.to(Login_Page());
+                    }
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
                       color: Colors.indigo,
                     ),
-                  ),
-                  SizedBox(
-                    height: Get.height * 0.03,
-                  ),
-                  SizedBox(
+                    height: Get.height * 0.06,
                     width: Get.width * 0.3,
-                    child: TextField(
-                      controller: namecontroller,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Full Name',
-                          suffixIcon: Icon(
-                            FontAwesomeIcons.person,
-                            size: 17,
-                          )),
-                    ),
-                  ),
-                  SizedBox(
-                    height: Get.height * 0.05,
-                  ),
-                  SizedBox(
-                    width: Get.width * 0.3,
-                    child: TextField(
-                      controller: emailcontroller,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Email Address',
-                          suffixIcon: Icon(
-                            FontAwesomeIcons.envelope,
-                            size: 17,
-                          )),
-                    ),
-                  ),
-                  SizedBox(
-                    height: Get.height * 0.05,
-                  ),
-                  SizedBox(
-                    width: Get.width * 0.3,
-                    child: TextField(
-                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      maxLength: 10,
-                      keyboardType: TextInputType.number,
-                      controller: mobilecontroller,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Mobile Number',
-                          counterText: '',
-                          suffixIcon: Icon(
-                            FontAwesomeIcons.mobile,
-                            size: 17,
-                          )),
-                    ),
-                  ),
-                  SizedBox(
-                    height: Get.height * 0.05,
-                  ),
-                  SizedBox(
-                    width: Get.width * 0.3,
-                    child: TextField(
-                      controller: passwordcontroller,
-                      obscureText: isHidden,
-                      decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          labelText: 'Password',
-                          suffixIcon: InkWell(
-                            onTap: () {
-                              togglePasswordView();
-                            },
-                            child: const Icon(
-                              FontAwesomeIcons.eyeSlash,
-                              size: 15,
-                            ),
-                          )),
-                    ),
-                  ),
-                  SizedBox(
-                    height: Get.height * 0.05,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      signUp();
-                     final result = resgidterData(
-                          namecontroller.text.toString(),
-                          emailcontroller.text.toString(),
-                          passwordcontroller.text.toString(),
-                          mobilecontroller.text.toString());
-
-                     if(result==1)
-                       {
-                         Get.to(Login_Page());
-                       }
-                    },
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.indigo,
-                      ),
-                      height: Get.height * 0.06,
-                      width: Get.width * 0.3,
-                      child: const Center(
-                        child: Text(
-                          "Create Account",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    child: const Center(
+                      child: Text(
+                        "Create Account",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: Get.height * 0.05,
-                  ),
-
-                  RichText(
-                    text: TextSpan(
-                      text: "Alredy have an account ?? ",
-                      style: TextStyle(
-                        fontSize: 15,
-                      ),
-                      children: [
-                        WidgetSpan(
-                          child: InkWell(
-                            onTap: () {
-                              Get.to(Login_Page());
-                            },
-                            child: Text(
-                              "Login Now",
-                              style: TextStyle(
-                                color: Colors.indigo,
-                                fontSize: 15,
-                              ),
+                ),
+                SizedBox(
+                  height: Get.height * 0.05,
+                ),
+                RichText(
+                  text: TextSpan(
+                    text: "Already have an account ??",
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                    children: [
+                      WidgetSpan(
+                        child: InkWell(
+                          onTap: () {
+                            Get.to(Login_Page());
+                          },
+                          child: Text(
+                            "Login Now",
+                            style: TextStyle(
+                              color: Colors.indigo,
+                              fontSize: 15,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              )
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ],
       ),
@@ -290,5 +276,67 @@ class _Registration_pageState extends State<Registration_page> {
     setState(() {
       isHidden = !isHidden;
     });
+  }
+
+  Widget imageprofile() {
+    return Stack(
+      children: [
+        CircleAvatar(
+          radius: 80,
+          backgroundImage: selectedImage != null
+              ? Image.network(selectedImage!.path).image
+              : AssetImage("assets/images/prof.png"),
+        ),
+        Positioned(
+          bottom: 20,
+          right: 10,
+          child: InkWell(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text("Pick an image"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(Icons.photo_library),
+                        title: Text("Pick from gallery"),
+                        onTap: () {
+                          Navigator.pop(context);
+                          _pickImage(ImageSource.gallery);
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.camera_alt),
+                        title: Text("Take a photo"),
+                        onTap: () {
+                          Navigator.pop(context);
+                          _pickImage(ImageSource.camera);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            child: Icon(
+              Icons.camera_alt,
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final imageFile = await ImagePicker().pickImage(source: source);
+    if (imageFile != null) {
+      setState(() {
+        selectedImage = XFile(imageFile.path);
+      });
+    }
   }
 }
