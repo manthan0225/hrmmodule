@@ -16,7 +16,10 @@ void main() async {
       apiKey: "AIzaSyBDhpvD9RDWzwQCn2ZAFLEpKZLoslWGVsM",
       appId: "App id here",
       messagingSenderId: "Messaging sender id here",
-      projectId: "project id here",
+      projectId: "chatboard-85ecf",
+      authDomain: "chatboard-85ecf.firebaseapp.com",
+      databaseURL: "https://chatboard-85ecf-default-rtdb.firebaseio.com",
+      storageBucket: "gs://chatboard-85ecf.appspot.com"
     ),
   );
   runApp(ChangeNotifierProvider(
