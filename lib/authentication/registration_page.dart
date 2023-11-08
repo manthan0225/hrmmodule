@@ -1,10 +1,11 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:hrmodules/HRM_module/hrm_Dashboard.dart';
 import 'package:hrmodules/authentication/login_page.dart';
 import 'package:hrmodules/services/auth_service.dart';
-import 'package:hrmodules/services/register_services.dart';
 import 'package:provider/provider.dart';
 
 class Registration_page extends StatefulWidget {
@@ -16,6 +17,7 @@ class Registration_page extends StatefulWidget {
 
 class _Registration_pageState extends State<Registration_page> {
 
+  final datarefrence = FirebaseDatabase.instance.reference();
 
   void signUp() async {
     final authServices = Provider.of<AuthServices>(context, listen: false);
@@ -25,6 +27,7 @@ class _Registration_pageState extends State<Registration_page> {
     String email = emailcontroller.text.toString();
     String mobile = mobilecontroller.text.toString();
     String password = passwordcontroller.text.toString();
+
 
     // Regular expressions for email format validation
     final emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
@@ -78,6 +81,22 @@ class _Registration_pageState extends State<Registration_page> {
     }
   }
 
+  int resgidterData(String name,String email,String password,String mobile){
+
+    final key = datarefrence.child("Users").push().key;
+
+    datarefrence.child("Users").child(key!).set({
+      'id' : key,
+      'name' : name,
+      'email' :email,
+      'password' : password,
+      'mobile' : mobile
+    });
+
+    return 1;
+
+  }
+
 
 
 
@@ -87,7 +106,6 @@ class _Registration_pageState extends State<Registration_page> {
   TextEditingController passwordcontroller = TextEditingController();
   TextEditingController emailcontroller = TextEditingController();
 
-  Register_Services register_services = Register_Services();
 
   bool isHidden = true;
   @override
@@ -161,11 +179,14 @@ class _Registration_pageState extends State<Registration_page> {
                   SizedBox(
                     width: Get.width * 0.3,
                     child: TextField(
+                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      maxLength: 10,
                       keyboardType: TextInputType.number,
                       controller: mobilecontroller,
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Mobile Number',
+                          counterText: '',
                           suffixIcon: Icon(
                             FontAwesomeIcons.mobile,
                             size: 17,
@@ -200,12 +221,16 @@ class _Registration_pageState extends State<Registration_page> {
                   InkWell(
                     onTap: () {
                       signUp();
-                      register_services.resgidterData(
+                     final result = resgidterData(
                           namecontroller.text.toString(),
                           emailcontroller.text.toString(),
                           passwordcontroller.text.toString(),
                           mobilecontroller.text.toString());
-                      Get.to(HRM_Module());
+
+                     if(result==1)
+                       {
+                         Get.to(Login_Page());
+                       }
                     },
                     child: Container(
                       decoration: const BoxDecoration(
