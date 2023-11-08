@@ -45,6 +45,13 @@ class _Registration_pageState extends State<Registration_page> {
           backgroundColor: Colors.indigo,
         ),
       );
+    } else if (mobile.length != 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Mobile number should have exactly 10 digits."),
+          backgroundColor: Colors.indigo,
+        ),
+      );
     } else if (!passwordRegExp.hasMatch(password)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -70,6 +77,7 @@ class _Registration_pageState extends State<Registration_page> {
       }
     }
   }
+
 
 
 
