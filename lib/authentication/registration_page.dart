@@ -20,15 +20,57 @@ class _Registration_pageState extends State<Registration_page> {
   void signUp() async {
     final authServices = Provider.of<AuthServices>(context, listen: false);
 
-    try {
-      await authServices.signUpWithEmailandPassword(
-          emailcontroller.text.toString(), passwordcontroller.text.toString());
+    // Get the text values from the input fields
+    String name = namecontroller.text.toString();
+    String email = emailcontroller.text.toString();
+    String mobile = mobilecontroller.text.toString();
+    String password = passwordcontroller.text.toString();
 
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+    // Regular expressions for email format validation
+    final emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    final passwordRegExp = RegExp(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$');
+
+    // Check if any of the fields are empty
+    if (name.isEmpty || email.isEmpty || mobile.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Please fill in all the fields."),
+          backgroundColor: Colors.indigo,
+        ),
+      );
+    } else if (!emailRegExp.hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Please enter a valid email address."),
+          backgroundColor: Colors.indigo,
+        ),
+      );
+    } else if (!passwordRegExp.hasMatch(password)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Please enter a valid password. It should be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
+          ),
+          backgroundColor: Colors.indigo,
+        ),
+      );
+    } else {
+      // Attempt to sign up with the provided data
+      try {
+        await authServices.signUpWithEmailandPassword(email, password);
+        // You can add additional logic here to save user data or perform other actions upon successful registration.
+        Get.to(HRM_Module());
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: Colors.indigo,
+          ),
+        );
+      }
     }
   }
+
 
 
   TextEditingController namecontroller = TextEditingController();
@@ -111,6 +153,7 @@ class _Registration_pageState extends State<Registration_page> {
                   SizedBox(
                     width: Get.width * 0.3,
                     child: TextField(
+                      keyboardType: TextInputType.number,
                       controller: mobilecontroller,
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),

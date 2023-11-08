@@ -23,13 +23,11 @@ class _Login_PageState extends State<Login_Page> {
     try {
       await authServices.signInWithEmailandPassword(
           emailController.text.toString(), passwordController.text.toString());
-
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
