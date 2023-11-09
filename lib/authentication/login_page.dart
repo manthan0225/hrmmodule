@@ -47,13 +47,10 @@ class _Login_PageState extends State<Login_Page> {
     prefs.setBool('rememberMe', rememberMe);
   }
 
-
-void signin() async {
-
-    if(rememberMe)
-      {
-        savePreferences();
-      }
+  void signin() async {
+    if (rememberMe) {
+      savePreferences();
+    }
 
     final authServices = Provider.of<AuthServices>(context, listen: false);
 
@@ -155,8 +152,17 @@ void signin() async {
                   ),
                   InkWell(
                     onTap: () {
-
-                      signin();
+                      if (emailController.text.isNotEmpty &&
+                          passwordController.text.isNotEmpty) {
+                        signin();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Please fill in all the fields."),
+                            backgroundColor: Colors.indigo,
+                          ),
+                        );
+                      }
                     },
                     child: Container(
                       decoration: const BoxDecoration(
@@ -191,7 +197,8 @@ void signin() async {
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => Registration_page()),
+                                MaterialPageRoute(
+                                    builder: (context) => Registration_page()),
                               );
                             },
                             child: Text(
@@ -206,7 +213,6 @@ void signin() async {
                       ],
                     ),
                   )
-
                 ],
               )),
           Expanded(

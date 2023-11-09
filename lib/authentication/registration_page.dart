@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +22,6 @@ class _Registration_pageState extends State<Registration_page> {
   final datarefrence = FirebaseDatabase.instance.reference();
   String selectfile = '';
   late Uint8List selectedImageInBytes;
-
-
 
   TextEditingController namecontroller = TextEditingController();
   TextEditingController mobilecontroller = TextEditingController();
@@ -216,9 +212,11 @@ class _Registration_pageState extends State<Registration_page> {
                     if (namecontroller.text.isNotEmpty &&
                         emailcontroller.text.isNotEmpty &&
                         mobilecontroller.text.isNotEmpty &&
-                        passwordcontroller.text.isNotEmpty) {
+                        passwordcontroller.text.isNotEmpty &&
+                        selectfile.isNotEmpty &&
+                        selectedImageInBytes.isNotEmpty) {
+                      uploadFile();
                       signUp();
-                      // Get.to(Login_Page()) should be in the signUp method
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -292,8 +290,7 @@ class _Registration_pageState extends State<Registration_page> {
       children: [
         CircleAvatar(
           radius: 80,
-          backgroundImage:
-          selectfile.isNotEmpty
+          backgroundImage: selectfile.isNotEmpty
               ? Image.memory(Uint8List.fromList(selectedImageInBytes)).image
               : AssetImage("assets/images/prof.png"),
         ),
@@ -314,7 +311,7 @@ class _Registration_pageState extends State<Registration_page> {
                         title: Text("Pick from gallery"),
                         onTap: () {
                           Navigator.pop(context);
-                           selectedFile(true);
+                          selectedFile(true);
                         },
                       ),
                       ListTile(
@@ -342,38 +339,40 @@ class _Registration_pageState extends State<Registration_page> {
   }
 
   void selectedFile(bool imageform) async {
-
     FilePickerResult? fileresult = await FilePicker.platform.pickFiles();
 
-    if(fileresult != null)
-      {
-        setState(() {
-          selectfile = fileresult.files.first.name;
-          selectedImageInBytes = fileresult.files.first.bytes!;
-        });
-      }
+    if (fileresult != null) {
+      setState(() {
+        selectfile = fileresult.files.first.name;
+        selectedImageInBytes = fileresult.files.first.bytes!;
+      });
+    }
     print(selectfile);
-    uploadFile();
   }
 
   uploadFile() async {
-    
-    try
-        {
-          firebase_storage.UploadTask uploadTask;
-          
-          firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child("file").child('/' + selectfile);
+    try {
+      firebase_storage.UploadTask uploadTask;
 
-          final metadata = firebase_storage.SettableMetadata(contentType: 'image/jpeg');
+      firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child("file")
+          .child('/' + selectfile);
 
-          uploadTask = ref.putData(selectedImageInBytes,metadata);
-        }
-        catch (e)
-    {
+      final metadata =
+          firebase_storage.SettableMetadata(contentType: 'image/jpeg');
+
+      uploadTask = ref.putData(selectedImageInBytes, metadata);
+
+      print(uploadTask);
+
+      await uploadTask;
+
+      final String downloadURL = await ref.getDownloadURL();
+
+      print("File uploaded and download URL is: $downloadURL");
+    } catch (e) {
       print(e);
     }
-    
   }
-
-
 }
