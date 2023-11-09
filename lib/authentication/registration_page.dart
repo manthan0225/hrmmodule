@@ -9,7 +9,6 @@ import 'package:hrmodules/services/auth_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-
 class Registration_page extends StatefulWidget {
   const Registration_page({super.key});
 
@@ -21,10 +20,14 @@ class _Registration_pageState extends State<Registration_page> {
   final datarefrence = FirebaseDatabase.instance.reference();
   XFile? selectedImage;
 
+  TextEditingController namecontroller = TextEditingController();
+  TextEditingController mobilecontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
+  TextEditingController emailcontroller = TextEditingController();
+
   void signUp() async {
     final authServices = Provider.of<AuthServices>(context, listen: false);
 
-    // Get the text values from the input fields
     String name = namecontroller.text.toString();
     String email = emailcontroller.text.toString();
     String mobile = mobilecontroller.text.toString();
@@ -66,7 +69,7 @@ class _Registration_pageState extends State<Registration_page> {
     } else {
       try {
         await authServices.signUpWithEmailandPassword(email, password);
-        Get.to(HRM_Module());
+        Get.to(Login_Page()); // Navigate to the login_page
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -91,11 +94,6 @@ class _Registration_pageState extends State<Registration_page> {
 
     return 1;
   }
-
-  TextEditingController namecontroller = TextEditingController();
-  TextEditingController mobilecontroller = TextEditingController();
-  TextEditingController passwordcontroller = TextEditingController();
-  TextEditingController emailcontroller = TextEditingController();
 
   bool isHidden = true;
 
@@ -208,15 +206,19 @@ class _Registration_pageState extends State<Registration_page> {
                 ),
                 InkWell(
                   onTap: () {
-                    signUp();
-                    final result = resgidterData(
-                        namecontroller.text.toString(),
-                        emailcontroller.text.toString(),
-                        passwordcontroller.text.toString(),
-                        mobilecontroller.text.toString());
-
-                    if (result == 1) {
-                      Get.to(Login_Page());
+                    if (namecontroller.text.isNotEmpty &&
+                        emailcontroller.text.isNotEmpty &&
+                        mobilecontroller.text.isNotEmpty &&
+                        passwordcontroller.text.isNotEmpty) {
+                      signUp();
+                      // Get.to(Login_Page()) should be in the signUp method
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Please fill in all the fields."),
+                          backgroundColor: Colors.indigo,
+                        ),
+                      );
                     }
                   },
                   child: Container(

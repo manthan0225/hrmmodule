@@ -4,6 +4,8 @@ import 'package:hrmodules/HRM_module/chat_viewpage.dart';
 import 'package:hrmodules/HRM_module/dashBoard_View.dart';
 import 'package:hrmodules/HRM_module/hrm_Tree.dart';
 import 'package:hrmodules/HRM_module/notification.dart';
+import 'package:hrmodules/authentication/login_page.dart';
+import 'package:hrmodules/services/auth_service.dart';
 
 
 class HRM_Module extends StatefulWidget {
@@ -25,6 +27,8 @@ class _HRM_ModuleState extends State<HRM_Module> {
     "Leaves",
   ];
 
+  AuthServices authServices = AuthServices();
+
   int selectedIdx = 0;
 
   @override
@@ -40,6 +44,10 @@ class _HRM_ModuleState extends State<HRM_Module> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    IconButton(onPressed: (){
+                      authServices.signOut();
+                      Get.to(Login_Page());
+                    }, icon: Icon(Icons.logout)),
                     IconButton(
                       onPressed: () {
                         Get.dialog(Chat_ViewPage());

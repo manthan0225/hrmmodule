@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
+import 'package:hrmodules/authentication/login_page.dart';
 
 class AuthServices extends ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -25,4 +27,12 @@ class AuthServices extends ChangeNotifier {
       throw Exception(e.code);
     }
   }
+
+
+  void signOut() {
+    _firebaseAuth.signOut();
+    Get.to(Login_Page());
+  }
+
+
 }

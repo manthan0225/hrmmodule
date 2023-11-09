@@ -50,7 +50,10 @@ class _Login_PageState extends State<Login_Page> {
 
 void signin() async {
 
-    savePreferences();
+    if(rememberMe)
+      {
+        savePreferences();
+      }
 
     final authServices = Provider.of<AuthServices>(context, listen: false);
 
