@@ -1,3 +1,6 @@
+import 'dart:html';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,7 +9,8 @@ import 'package:get/get.dart';
 import 'package:hrmodules/HRM_module/hrm_Dashboard.dart';
 import 'package:hrmodules/authentication/login_page.dart';
 import 'package:hrmodules/services/auth_service.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'dart:io';
 import 'package:provider/provider.dart';
 
 class Registration_page extends StatefulWidget {
@@ -18,7 +22,10 @@ class Registration_page extends StatefulWidget {
 
 class _Registration_pageState extends State<Registration_page> {
   final datarefrence = FirebaseDatabase.instance.reference();
-  XFile? selectedImage;
+  String selectfile = '';
+  late Uint8List selectedImageInBytes;
+
+
 
   TextEditingController namecontroller = TextEditingController();
   TextEditingController mobilecontroller = TextEditingController();
@@ -285,8 +292,9 @@ class _Registration_pageState extends State<Registration_page> {
       children: [
         CircleAvatar(
           radius: 80,
-          backgroundImage: selectedImage != null
-              ? Image.network(selectedImage!.path).image
+          backgroundImage:
+          selectfile.isNotEmpty
+              ? Image.memory(Uint8List.fromList(selectedImageInBytes)).image
               : AssetImage("assets/images/prof.png"),
         ),
         Positioned(
@@ -306,7 +314,7 @@ class _Registration_pageState extends State<Registration_page> {
                         title: Text("Pick from gallery"),
                         onTap: () {
                           Navigator.pop(context);
-                          _pickImage(ImageSource.gallery);
+                           selectedFile(true);
                         },
                       ),
                       ListTile(
@@ -314,7 +322,7 @@ class _Registration_pageState extends State<Registration_page> {
                         title: Text("Take a photo"),
                         onTap: () {
                           Navigator.pop(context);
-                          _pickImage(ImageSource.camera);
+                          selectedFile(true);
                         },
                       ),
                     ],
@@ -333,12 +341,39 @@ class _Registration_pageState extends State<Registration_page> {
     );
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    final imageFile = await ImagePicker().pickImage(source: source);
-    if (imageFile != null) {
-      setState(() {
-        selectedImage = XFile(imageFile.path);
-      });
-    }
+  void selectedFile(bool imageform) async {
+
+    FilePickerResult? fileresult = await FilePicker.platform.pickFiles();
+
+    if(fileresult != null)
+      {
+        setState(() {
+          selectfile = fileresult.files.first.name;
+          selectedImageInBytes = fileresult.files.first.bytes!;
+        });
+      }
+    print(selectfile);
+    uploadFile();
   }
+
+  uploadFile() async {
+    
+    try
+        {
+          firebase_storage.UploadTask uploadTask;
+          
+          firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child("file").child('/' + selectfile);
+
+          final metadata = firebase_storage.SettableMetadata(contentType: 'image/jpeg');
+
+          uploadTask = ref.putData(selectedImageInBytes,metadata);
+        }
+        catch (e)
+    {
+      print(e);
+    }
+    
+  }
+
+
 }
