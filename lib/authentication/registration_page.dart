@@ -286,6 +286,7 @@ class _Registration_pageState extends State<Registration_page> {
           backgroundImage: selectedImage != null
               ? Image.network(selectedImage!.path).image
               : AssetImage("assets/images/prof.png"),
+
         ),
         Positioned(
           bottom: 20,
