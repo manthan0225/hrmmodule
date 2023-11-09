@@ -8,6 +8,7 @@ class TreeViewPage extends StatefulWidget {
 }
 
 class _TreeViewPageState extends State<TreeViewPage> {
+
   int newNodeCount = 5;
 
   Map<int, String> nodeImages = {
@@ -74,6 +75,7 @@ class _TreeViewPageState extends State<TreeViewPage> {
 
   @override
   void initState() {
+    super.initState();
     final node1 = Node.Id(1);
     final node2 = Node.Id(2);
     final node3 = Node.Id(3);

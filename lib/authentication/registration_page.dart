@@ -8,7 +8,7 @@ import 'package:hrmodules/authentication/login_page.dart';
 import 'package:hrmodules/services/auth_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
+
 
 class Registration_page extends StatefulWidget {
   const Registration_page({super.key});

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hrmodules/authentication/registration_page.dart';
 import 'package:hrmodules/services/auth_service.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login_Page extends StatefulWidget {
   const Login_Page({super.key});
@@ -16,8 +17,41 @@ class _Login_PageState extends State<Login_Page> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isHidden = true;
+  bool rememberMe = false;
 
-  void signin() async {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadSavedPreferences();
+  }
+
+  void loadSavedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      emailController.text = prefs.getString('email') ?? '';
+      passwordController.text = prefs.getString('password') ?? '';
+      rememberMe = prefs.getBool('rememberMe') ?? false;
+    });
+  }
+
+  void savePreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (rememberMe) {
+      prefs.setString('email', emailController.text);
+      prefs.setString('password', passwordController.text);
+    } else {
+      prefs.remove('email');
+      prefs.remove('password');
+    }
+    prefs.setBool('rememberMe', rememberMe);
+  }
+
+
+void signin() async {
+
+    savePreferences();
+
     final authServices = Provider.of<AuthServices>(context, listen: false);
 
     try {
@@ -89,6 +123,18 @@ class _Login_PageState extends State<Login_Page> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      Checkbox(
+                        value: rememberMe,
+                        onChanged: (value) {
+                          setState(() {
+                            rememberMe = value!;
+                          });
+                        },
+                      ),
+                      Text('Remember Me'),
+                      SizedBox(
+                        width: Get.width * 0.1,
+                      ),
                       const Text(
                         "Forgot Password",
                         style: TextStyle(
@@ -106,6 +152,7 @@ class _Login_PageState extends State<Login_Page> {
                   ),
                   InkWell(
                     onTap: () {
+
                       signin();
                     },
                     child: Container(
