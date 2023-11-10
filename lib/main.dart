@@ -10,14 +10,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: FirebaseOptions(
-      apiKey: "AIzaSyBDhpvD9RDWzwQCn2ZAFLEpKZLoslWGVsM",
-      appId: "App id here",
-      messagingSenderId: "Messaging sender id here",
-      projectId: "chatboard-85ecf",
-      authDomain: "chatboard-85ecf.firebaseapp.com",
-      databaseURL: "https://chatboard-85ecf-default-rtdb.firebaseio.com",
-      storageBucket: "gs://chatboard-85ecf.appspot.com"
-    ),
+        apiKey: "AIzaSyBDhpvD9RDWzwQCn2ZAFLEpKZLoslWGVsM",
+        appId: "App id here",
+        messagingSenderId: "Messaging sender id here",
+        projectId: "chatboard-85ecf",
+        authDomain: "chatboard-85ecf.firebaseapp.com",
+        databaseURL: "https://chatboard-85ecf-default-rtdb.firebaseio.com",
+        storageBucket: "gs://chatboard-85ecf.appspot.com"),
   );
   runApp(ChangeNotifierProvider(
     create: (context) => AuthServices(),
@@ -33,7 +32,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     _initializeFirebase();
@@ -44,7 +42,6 @@ class _MyAppState extends State<MyApp> {
     await Firebase.initializeApp();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -54,4 +51,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-

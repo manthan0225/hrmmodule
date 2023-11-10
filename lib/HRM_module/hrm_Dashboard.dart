@@ -7,13 +7,11 @@ import 'package:hrmodules/HRM_module/notification.dart';
 import 'package:hrmodules/authentication/login_page.dart';
 import 'package:hrmodules/services/auth_service.dart';
 
-
 class HRM_Module extends StatefulWidget {
   const HRM_Module({Key? key}) : super(key: key);
 
   @override
   State<HRM_Module> createState() => _HRM_ModuleState();
-
 }
 
 class _HRM_ModuleState extends State<HRM_Module> {
@@ -44,10 +42,12 @@ class _HRM_ModuleState extends State<HRM_Module> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(onPressed: (){
-                      authServices.signOut();
-                      Get.to(Login_Page());
-                    }, icon: Icon(Icons.logout)),
+                    IconButton(
+                        onPressed: () {
+                          authServices.signOut();
+                          Get.to(Login_Page());
+                        },
+                        icon: Icon(Icons.logout)),
                     IconButton(
                       onPressed: () {
                         Get.dialog(Chat_ViewPage());

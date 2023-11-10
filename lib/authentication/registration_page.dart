@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:hrmodules/HRM_module/hrm_Dashboard.dart';
 import 'package:hrmodules/authentication/login_page.dart';
 import 'package:hrmodules/services/auth_service.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'dart:io';
 import 'package:provider/provider.dart';
 
 class Registration_page extends StatefulWidget {
@@ -22,6 +20,7 @@ class _Registration_pageState extends State<Registration_page> {
   final datarefrence = FirebaseDatabase.instance.reference();
   String selectfile = '';
   late Uint8List selectedImageInBytes;
+  String downloadURL= "";
 
   TextEditingController namecontroller = TextEditingController();
   TextEditingController mobilecontroller = TextEditingController();
@@ -35,11 +34,12 @@ class _Registration_pageState extends State<Registration_page> {
     String email = emailcontroller.text.toString();
     String mobile = mobilecontroller.text.toString();
     String password = passwordcontroller.text.toString();
+    String pic = downloadURL;
 
     final emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
     final passwordRegExp = RegExp(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$');
 
-    if (name.isEmpty || email.isEmpty || mobile.isEmpty || password.isEmpty) {
+    if (name.isEmpty || email.isEmpty || mobile.isEmpty || password.isEmpty ) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Please fill in all the fields."),
@@ -71,8 +71,15 @@ class _Registration_pageState extends State<Registration_page> {
       );
     } else {
       try {
-        await authServices.signUpWithEmailandPassword(email, password);
-        Get.to(Login_Page()); // Navigate to the login_page
+        if(pic.isNotEmpty){
+          await authServices.signUpWithEmailandPassword(email, password);
+          int result = await resgidterData(name,email,password,mobile,pic);
+
+          if(result==1)
+            {
+              Get.to(Login_Page()); // Navigate to the login_page
+            }
+        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -84,15 +91,16 @@ class _Registration_pageState extends State<Registration_page> {
     }
   }
 
-  int resgidterData(String name, String email, String password, String mobile) {
+  int resgidterData(String name, String email, String password, String mobile,String pic) {
     final key = datarefrence.child("Users").push().key;
 
     datarefrence.child("Users").child(key!).set({
       'id': key,
       'name': name,
       'email': email,
-      'password': password,
-      'mobile': mobile
+      // 'password': password,
+      'mobile': mobile,
+      'profil_pic' : pic
     });
 
     return 1;
@@ -368,7 +376,7 @@ class _Registration_pageState extends State<Registration_page> {
 
       await uploadTask;
 
-      final String downloadURL = await ref.getDownloadURL();
+      downloadURL = await ref.getDownloadURL();
 
       print("File uploaded and download URL is: $downloadURL");
     } catch (e) {
