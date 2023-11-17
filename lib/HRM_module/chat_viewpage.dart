@@ -117,6 +117,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
   List userList = [];
   String useremail = "";
+  String sendername = "";
   String receivername = "";
 
   final auth = FirebaseAuth.instance;
@@ -125,7 +126,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
   @override
   void initState() {
     super.initState();
-    // loadUsersData();
   }
 
   Future<List<UserModel>> loadUsersData() async {
@@ -200,7 +200,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                   backgroundImage:
                                       NetworkImage(chatname[0].image),
                                 ),
-                                title: Text("${useremail}"),
+                                title: Text("${sendername}"),
                               ),
                             ),
                             SizedBox(
@@ -235,7 +235,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                   } else {
                                     // If the data has been successfully loaded
                                     userList = snapshot.data ?? [];
-                                    print(userList.length);
 
                                     return ListView.builder(
                                       itemCount: userList.length,
@@ -244,6 +243,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                                 .email ==
                                             useremail; // Replace 'John Doe' with the name you want to skip
                                         if (shouldSkipItem) {
+                                            sendername = userList[index].name ;
                                           return SizedBox.shrink();
                                         } else {
                                           return InkWell(
