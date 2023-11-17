@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:get/get.dart';
 import 'package:hrmodules/HRM_module/hrmdata.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Chat_ViewPage extends StatefulWidget {
   const Chat_ViewPage({super.key});
@@ -113,14 +115,58 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
             "data:image/jpeg;base64,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"),
   ];
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+  List userList = [];
+  String useremail = "";
+  String receivername = "";
 
   final auth = FirebaseAuth.instance;
   final ref = FirebaseDatabase.instance.ref("Users");
+
+  @override
+  void initState() {
+    super.initState();
+    // loadUsersData();
+  }
+
+  Future<List<UserModel>> loadUsersData() async {
+
+    Completer<List<UserModel>> completer = Completer();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    useremail = prefs.getString('email') ?? '';
+
+    try {
+      ref.onValue.listen((event) {
+        final data = event.snapshot.value;
+        print(data);
+
+        if (data != null) {
+          List<UserModel> userList = [];
+          for (var entry in (data as Map<String, dynamic>).entries) {
+            var userData = entry.value;
+            if (userData != null && userData['id'] != null) {
+              userList.add(UserModel.fromJson(userData['id'], userData));
+            } else {
+              // Handle the case where 'id' or userData is null
+              print('Invalid user data: $userData');
+            }
+          }
+
+          // Complete the future with the userList
+          completer.complete(userList);
+        } else {
+          // Handle the case where data is null
+          completer.completeError(Exception('Data is null'));
+        }
+      });
+    } catch (error) {
+      print("Error retrieving data: $error");
+      completer.completeError(error);
+    }
+
+    return completer.future;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +200,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                   backgroundImage:
                                       NetworkImage(chatname[0].image),
                                 ),
-                                title: Text("${chatname[0].name}"),
+                                title: Text("${useremail}"),
                               ),
                             ),
                             SizedBox(
@@ -179,41 +225,74 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                               ),
                             ),
                             Flexible(
-                                child: FirebaseAnimatedList(
-                              query: ref,
-                              itemBuilder:
-                                  (context, snapshot, animation, index) {
-                                return ListTile(
-                                  leading: Stack(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(chatname[index].image),
-                                      ),
-                                      Positioned(
-                                        bottom: 0,
-                                        right: 0,
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 10),
-                                          child: CircleAvatar(
-                                            radius: 5,
-                                            backgroundColor:
-                                                chatname[index].isOnline
-                                                    ? Colors.green
-                                                    : Colors.grey,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  title: Text(
-                                      "${snapshot.child("name").value.toString()}"),
-                                  subtitle: Text(
-                                      "${snapshot.child("mobile").value.toString()}"),
-                                );
-                              },
-                            ))
+                              child: FutureBuilder<List<UserModel>>(
+                                future: loadUsersData(),
+                                builder: (context, snapshot) {
+                                   if (snapshot.hasError) {
+                                    // If an error occurred
+                                    return Center(
+                                        child: Text('Error loading data'));
+                                  } else {
+                                    // If the data has been successfully loaded
+                                    userList = snapshot.data ?? [];
+                                    print(userList.length);
+
+                                    return ListView.builder(
+                                      itemCount: userList.length,
+                                      itemBuilder: (context, index) {
+                                        bool shouldSkipItem = userList[index]
+                                                .email ==
+                                            useremail; // Replace 'John Doe' with the name you want to skip
+                                        if (shouldSkipItem) {
+                                          return SizedBox.shrink();
+                                        } else {
+                                          return InkWell(
+                                            onTap: (){
+                                              setState(() {
+                                                receivername = userList[index].name;
+                                              });
+                                            },
+                                            child: ListTile(
+                                              leading: Stack(
+                                                children: [
+                                                  CircleAvatar(
+                                                    backgroundImage: NetworkImage(
+                                                        userList[index]
+                                                            .profil_pic),
+                                                  ),
+                                                  Positioned(
+                                                    bottom: 0,
+                                                    right: 0,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 10),
+                                                      child: CircleAvatar(
+                                                        radius: 5,
+                                                        backgroundColor:
+                                                            // chatname[index]
+                                                            //         .isOnline
+                                                            //     ? Colors.green
+                                                            //     :
+                                                            Colors.grey,
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              title:
+                                                  Text("${userList[index].name}"),
+                                              subtitle: Text(
+                                                  "${userList[index].email}"),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            )
                           ],
                         )),
                     Container(
@@ -238,7 +317,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                     backgroundImage:
                                         NetworkImage(chatname[0].image),
                                   ),
-                                  title: Text("${chatname[0].name}"),
+                                  title: Text("${receivername}"),
                                 ),
                               ),
                             ),

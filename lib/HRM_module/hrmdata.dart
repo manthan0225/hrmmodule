@@ -54,3 +54,35 @@ class EmpName {
 
   });
 }
+
+
+class UserModel {
+  final String id;
+  final String name;
+  final String email;
+  final String mobile;
+  final String profil_pic;
+
+  UserModel({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.mobile,
+    required this.profil_pic,
+  });
+
+  factory UserModel.fromJson(String id, Map<String, dynamic> json) {
+    return UserModel(
+      id: id,
+      name: json['name'] as String,
+      email: json['email'] as String,
+      mobile: json['mobile'] as String,
+      profil_pic: json['profil_pic'] as String,
+    );
+  }
+
+  static List<UserModel> fromMap(Map<String, Map<String, dynamic>> map) {
+    return map.entries.map((entry) => UserModel.fromJson(entry.key, entry.value)).toList();
+  }
+}
+
