@@ -339,40 +339,59 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
     userId = prefs.getString('userId')!;
     String msgid = "${userId} ${rec}";
 
-    DatabaseReference messagesRef = FirebaseDatabase.instance.ref().child('messages').child("${msgid}");
+    print('message key : '+msgid);
 
-    messagesRef
-        .once()
-        .then((DataSnapshot snapshot) {
-          if (snapshot.value != null) {
-            Map<dynamic, dynamic>? messages =
-                snapshot.value as Map<dynamic, dynamic>?;
+    DatabaseReference messagesRef = FirebaseDatabase.instance.ref('messages').child("${msgid}");
 
-            if (messages != null) {
-              messageList.clear();
-              messages.forEach((key, value) {
-                String text = value['text'];
-                String sender = value['sender'];
-                int timestamp = value['timestamp'];
+    messagesRef.printError();   // print error
 
-                Message message = Message(
-                  text: text,
-                  sender: sender,
-                  timestamp: timestamp,
-                );
+    messagesRef.onValue.listen((event) {
 
-                print(message);
+      var snapshot = event.snapshot;
 
-                messageList.add(message);
-              });
-            }
-          } else {
-            print("No messages found.");
-          }
-        } as FutureOr Function(DatabaseEvent value))
-        .catchError((error) {
-      print("Error retrieving data: $error");
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic>? messages =
+        snapshot.value as Map<dynamic, dynamic>?;
+
+        if (messages != null) {
+
+          messageList.clear();
+
+          messages.forEach((key, value) {
+
+            String text = value['text'];
+            String sender = value['sender'];
+            int timestamp = value['timestamp'];
+
+            Message message = Message(
+              text: text,
+              sender: sender,
+              timestamp: timestamp,
+            );
+
+            print('message : '+message.text);
+
+            messageList.add(message);
+
+          });
+        }
+      } else {
+        print(" message list No messages found.");
+      }
     });
+
+    // messagesRef
+    //     .once()
+    //     .then((DataSnapshot snapshot) {
+    //
+    //   print('Snapshop data${snapshot.value}');
+    //
+    //
+    //
+    //     })
+    //     .catchError((error) {
+    //   print("Error retrieving data: $error");
+    // });
   }
 
   Future<List<UserModel>> loadUsersData() async {
