@@ -16,6 +16,8 @@ class Chat_ViewPage extends StatefulWidget {
 }
 
 class _Chat_ViewPageState extends State<Chat_ViewPage> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController _typeAMessageController = TextEditingController();
   final chatname = [
     EmpName(
         name: "Mukesh Ambani",
@@ -323,124 +325,16 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                             ),
                             Expanded(
                               flex: 78,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: ListView(
-                                  children: <Widget>[
-                                    getSenderView(
-                                        ChatBubbleClipper1(
-                                            type: BubbleType.sendBubble),
-                                        context),
-                                    getReceiverView(
-                                        ChatBubbleClipper1(
-                                            type: BubbleType.receiverBubble),
-                                        context),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    getSenderView(
-                                        ChatBubbleClipper2(
-                                            type: BubbleType.sendBubble),
-                                        context),
-                                    getReceiverView(
-                                        ChatBubbleClipper2(
-                                            type: BubbleType.receiverBubble),
-                                        context),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    getSenderView(
-                                        ChatBubbleClipper3(
-                                            type: BubbleType.sendBubble),
-                                        context),
-                                    getReceiverView(
-                                        ChatBubbleClipper3(
-                                            type: BubbleType.receiverBubble),
-                                        context),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    getSenderView(
-                                        ChatBubbleClipper4(
-                                            type: BubbleType.sendBubble),
-                                        context),
-                                    getReceiverView(
-                                        ChatBubbleClipper4(
-                                            type: BubbleType.receiverBubble),
-                                        context),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    getSenderView(
-                                        ChatBubbleClipper5(
-                                            type: BubbleType.sendBubble),
-                                        context),
-                                    getReceiverView(
-                                        ChatBubbleClipper5(
-                                            type: BubbleType.receiverBubble),
-                                        context),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    getSenderView(
-                                        ChatBubbleClipper6(
-                                            type: BubbleType.sendBubble),
-                                        context),
-                                    getReceiverView(
-                                        ChatBubbleClipper6(
-                                            type: BubbleType.receiverBubble),
-                                        context),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    getSenderView(
-                                        ChatBubbleClipper7(
-                                            type: BubbleType.sendBubble),
-                                        context),
-                                    getReceiverView(
-                                        ChatBubbleClipper7(
-                                            type: BubbleType.receiverBubble),
-                                        context),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    getSenderView(
-                                        ChatBubbleClipper8(
-                                            type: BubbleType.sendBubble),
-                                        context),
-                                    getReceiverView(
-                                        ChatBubbleClipper8(
-                                            type: BubbleType.receiverBubble),
-                                        context),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    getSenderView(
-                                        ChatBubbleClipper9(
-                                            type: BubbleType.sendBubble),
-                                        context),
-                                    getReceiverView(
-                                        ChatBubbleClipper9(
-                                            type: BubbleType.receiverBubble),
-                                        context),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    getSenderView(
-                                        ChatBubbleClipper10(
-                                            type: BubbleType.sendBubble),
-                                        context),
-                                    Padding(
-                                      padding: EdgeInsets.only(bottom: 10),
-                                      child: getReceiverView(
-                                          ChatBubbleClipper10(
-                                              type: BubbleType.receiverBubble),
-                                          context),
-                                    )
-                                  ],
-                                ),
-                              ),
+                             child: StreamBuilder(
+                               stream: FirebaseDatabase.instance.reference().child('messages').onValue,
+                               builder: (context,snapshot)
+                                 {
+                                   if(snapshot.hasData)
+                                     {
+
+                                     }
+                                 }
+                             ),
                             ),
                             Expanded(
                                 flex: 11,
@@ -456,11 +350,15 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                                 BorderRadius.circular(50),
                                             border: Border.all(),
                                           ),
-                                          child: TextFormField(
-                                            decoration: InputDecoration(
-                                              prefixIcon: Icon(Icons.search),
-                                              hintText: 'Type a message',
-                                              border: InputBorder.none,
+                                          child: Form(
+                                            key: _formKey,
+                                            child: TextFormField(
+                                              controller: _typeAMessageController,
+                                              decoration: InputDecoration(
+                                                prefixIcon: Icon(Icons.search),
+                                                hintText: 'Type a message',
+                                                border: InputBorder.none,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -472,7 +370,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                       child: IconButton(
                                         icon: Icon(Icons.send,
                                             color: Colors.black45),
-                                        onPressed: () {},
+                                        onPressed: _sendMessage,
                                       ),
                                     ),
                                     SizedBox(
@@ -560,4 +458,23 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
           ),
         ),
       );
+
+
+  void _sendMessage() {
+    if (_formKey.currentState!.validate()) {
+      // Here, you can retrieve the text from the TextFormField
+      String text = _typeAMessageController.text;
+
+      // Clear the TextFormField
+      _typeAMessageController.clear();
+
+      // Save the message to the Realtime Database
+      FirebaseDatabase.instance.reference().child('messages').push().set({
+        'text': text,
+        'sender': sendername,
+        'reciver' : receivername,// replace this with the actual username
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+      });
+    }
+  }
 }
