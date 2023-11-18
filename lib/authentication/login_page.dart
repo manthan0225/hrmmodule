@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -57,6 +58,15 @@ class _Login_PageState extends State<Login_Page> {
     try {
       await authServices.signInWithEmailandPassword(
           emailController.text.toString(), passwordController.text.toString());
+
+     final userId = FirebaseAuth.instance.currentUser!.uid;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      print(userId);
+
+      prefs.setString('userId', userId);
+
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
