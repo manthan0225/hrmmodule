@@ -141,8 +141,8 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                                     userList[index].name;
                                                 receiverId = userList[index].id;
 
-                                                print(
-                                                    "Receiver id : ${receiverId}");
+                                                print("Receiver id : ${receiverId}");
+                                                getData(receiverId);
                                               });
                                             },
                                             child: ListTile(
@@ -355,11 +355,17 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
         'timestamp': DateTime.now().millisecondsSinceEpoch,
       });
     }
-
   }
 
-  getData() {
-    DatabaseReference messagesRef = FirebaseDatabase.instance.reference().child('messages').child("${userId}/${receiverId}");
+  getData(String rec) async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getString('userId')!;
+
+    String msgid = "${userId} ${rec}";
+
+
+    DatabaseReference messagesRef = FirebaseDatabase.instance.reference().child('messages').child("${msgid}");
 
     messagesRef.once().then((DataSnapshot snapshot) {
       if (snapshot.value != null) {
