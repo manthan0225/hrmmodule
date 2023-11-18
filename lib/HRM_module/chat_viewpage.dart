@@ -388,7 +388,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
             messageList.add(message);
           });
-
           print(messageList);
         }
       } else {
