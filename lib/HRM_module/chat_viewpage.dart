@@ -50,7 +50,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
   final ref = FirebaseDatabase.instance.ref("Users");
   final _firestore = FirebaseFirestore.instance;
 
-
   @override
   void initState() {
     super.initState();
@@ -141,7 +140,8 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                                     userList[index].name;
                                                 receiverId = userList[index].id;
 
-                                                print("Receiver id : ${receiverId}");
+                                                print(
+                                                    "Receiver id : ${receiverId}");
                                                 getData(receiverId);
                                               });
                                             },
@@ -215,35 +215,13 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                 ),
                               ),
                             ),
-                            // Expanded(
-                            //     flex: 78,
-                            //     child: StreamBuilder<QuerySnapshot>(
-                            //       stream: getData(),
-                            //       builder: (BuildContext context,
-                            //           AsyncSnapshot<QuerySnapshot> snapshot) {
-                            //         if (snapshot.hasError) {
-                            //           return Text('Something went wrong');
-                            //         }
-                            //
-                            //         if (snapshot.connectionState ==
-                            //             ConnectionState.waiting) {
-                            //           return Center(
-                            //               child: CircularProgressIndicator());
-                            //         }
-                            //
-                            //         return ListView(
-                            //           reverse: true,
-                            //           children: snapshot.data!.docs
-                            //               .map((DocumentSnapshot document) {
-                            //             Map<String, dynamic> data = document
-                            //                 .data()! as Map<String, dynamic>;
-                            //             return ListTile(
-                            //               title: Text(data['text']),
-                            //             );
-                            //           }).toList(),
-                            //         );
-                            //       },
-                            //     )),
+                            Expanded(
+                                flex: 78,
+                                child: ListView.builder(
+                                  itemCount: messageList.length,
+                                    itemBuilder: (context, index) {
+                                  return Text("${messageList[index].text}");
+                                })),
                             Expanded(
                                 flex: 11,
                                 child: Row(
@@ -279,7 +257,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                       child: IconButton(
                                         icon: Icon(Icons.send,
                                             color: Colors.black45),
-                                        onPressed: (){
+                                        onPressed: () {
                                           sendMessage(receiverId);
                                         },
                                       ),
@@ -331,14 +309,13 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
     );
   }
 
-   void sendMessage(String rec) async {
+  void sendMessage(String rec) async {
     if (_formKey.currentState!.validate()) {
       // Here, you can retrieve the text from the TextFormField
       String text = _typeAMessageController.text;
 
       // Clear the TextFormField
       _typeAMessageController.clear();
-
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -349,7 +326,12 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
       print("${msgid}");
 
-      FirebaseDatabase.instance.ref().child('messages').child("${msgid}").push().set({
+      FirebaseDatabase.instance
+          .ref()
+          .child('messages')
+          .child("${msgid}")
+          .push()
+          .set({
         'text': text,
         'sender': userId, // replace this with the actual username
         'timestamp': DateTime.now().millisecondsSinceEpoch,
@@ -357,50 +339,53 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
     }
   }
 
-  getData(String rec) async {
-
+  void getData(String rec) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getString('userId')!;
-
     String msgid = "${userId} ${rec}";
 
+    DatabaseReference messagesRef = FirebaseDatabase.instance
+        .reference()
+        .child('messages')
+        .child("${msgid}");
 
-    DatabaseReference messagesRef = FirebaseDatabase.instance.reference().child('messages').child("${msgid}");
+    messagesRef
+        .once()
+        .then((DataSnapshot snapshot) {
+          if (snapshot.value != null) {
+            Map<dynamic, dynamic>? messages =
+                snapshot.value as Map<dynamic, dynamic>?;
 
-    messagesRef.once().then((DataSnapshot snapshot) {
-      if (snapshot.value != null) {
-        Map<dynamic, dynamic>? messages = snapshot.value as Map<dynamic, dynamic>?;
+            if (messages != null) {
+              messageList.clear();
+              messages.forEach((key, value) {
+                String text = value['text'];
+                String sender = value['sender'];
+                String receiver = value['receiver'];
+                int timestamp = value['timestamp'];
 
-        if (messages != null) {
-          messageList.clear();
-          messages.forEach((key, value) {
-            String text = value['text'];
-            String sender = value['sender'];
-            String receiver = value['receiver'];
-            int timestamp = value['timestamp'];
+                Message message = Message(
+                  text: text,
+                  sender: sender,
+                  receiver: receiver,
+                  timestamp: timestamp,
+                );
 
-            Message message = Message(
-              text: text,
-              sender: sender,
-              receiver: receiver,
-              timestamp: timestamp,
-            );
+                print(message);
 
-            messageList.add(message);
-          });
-          print(messageList);
-        }
-      } else {
-        print("No messages found.");
-      }
-    } as FutureOr Function(DatabaseEvent value)).catchError((error) {
+                messageList.add(message);
+              });
+            }
+          } else {
+            print("No messages found.");
+          }
+        } as FutureOr Function(DatabaseEvent value))
+        .catchError((error) {
       print("Error retrieving data: $error");
     });
   }
 
-
   Future<List<UserModel>> loadUsersData() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     useremail = prefs.getString('email') ?? '';
@@ -438,5 +423,4 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
     return completer.future;
   }
-
 }
