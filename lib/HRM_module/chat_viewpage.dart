@@ -314,13 +314,11 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
       // Here, you can retrieve the text from the TextFormField
       String text = _typeAMessageController.text;
 
-      // Clear the TextFormField
       _typeAMessageController.clear();
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       userId = prefs.getString('userId')!;
-      // Save the message to the Realtime Database
 
       String msgid = "${userId} ${rec}";
 
@@ -379,19 +377,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
         print(" message list No messages found.");
       }
     });
-
-    // messagesRef
-    //     .once()
-    //     .then((DataSnapshot snapshot) {
-    //
-    //   print('Snapshop data${snapshot.value}');
-    //
-    //
-    //
-    //     })
-    //     .catchError((error) {
-    //   print("Error retrieving data: $error");
-    // });
   }
 
   Future<List<UserModel>> loadUsersData() async {

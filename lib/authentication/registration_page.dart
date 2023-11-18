@@ -8,6 +8,7 @@ import 'package:hrmodules/authentication/login_page.dart';
 import 'package:hrmodules/services/auth_service.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Registration_page extends StatefulWidget {
   const Registration_page({super.key});
@@ -91,11 +92,14 @@ class _Registration_pageState extends State<Registration_page> {
     }
   }
 
-  int resgidterData(String name, String email, String password, String mobile,String pic) {
-    final key = datarefrence.child("Users").push().key;
+  Future<int> resgidterData(String name, String email, String password, String mobile,String pic) async {
 
-    datarefrence.child("Users").child(key!).set({
-      'id': key,
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+   String userId = prefs.getString('userId')!;
+
+    datarefrence.child("Users").child(userId!).set({
+      'id': userId,
       'name': name,
       'email': email,
       // 'password': password,
