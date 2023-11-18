@@ -89,13 +89,11 @@ class UserModel {
 class Message {
   String text;
   String sender;
-  String receiver;
   int timestamp;
 
   Message({
     required this.text,
     required this.sender,
-    required this.receiver,
     required this.timestamp,
   });
 }
