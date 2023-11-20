@@ -73,6 +73,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                   children: [
                     Expanded(
                         flex: 25,
+
                         child: Column(
                           children: [
                             Container(
