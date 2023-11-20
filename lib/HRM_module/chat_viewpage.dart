@@ -342,10 +342,15 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
     userId = prefs.getString('userId')!;
     String msgid = "${userId} ${rec}";
 
+    String rmsgid = "${rec} ${userId}";
+
     print('message key : ' + msgid);
 
     DatabaseReference messagesRef =
         FirebaseDatabase.instance.ref('messages').child("${msgid}");
+
+    DatabaseReference RmessagesRef =
+    FirebaseDatabase.instance.ref('messages').child("${rmsgid}");
 
     messagesRef.printError(); // print error
 
@@ -359,6 +364,37 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
         if (messages != null) {
           messageList.clear();
+
+          messages.forEach((key, value) {
+            String text = value['text'];
+            String sender = value['sender'];
+            int timestamp = value['timestamp'];
+
+            Message message = Message(
+              text: text,
+              sender: sender,
+              timestamp: timestamp,
+            );
+
+            print('message : ' + message.text);
+
+            messageList.add(message);
+          });
+        }
+      } else {
+        print(" message list No messages found.");
+      }
+    });
+
+    RmessagesRef.onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic>? messages =
+        snapshot.value as Map<dynamic, dynamic>?;
+
+        if (messages != null) {
 
           messages.forEach((key, value) {
             String text = value['text'];
