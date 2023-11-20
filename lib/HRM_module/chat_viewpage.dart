@@ -48,7 +48,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
   final auth = FirebaseAuth.instance;
   final ref = FirebaseDatabase.instance.ref("Users");
-  final _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
