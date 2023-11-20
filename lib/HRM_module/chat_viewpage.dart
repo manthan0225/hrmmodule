@@ -218,14 +218,34 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                             ),
                             Expanded(
                                 flex: 78,
-                                child: ListView.builder(
+                                child: messageList.length == 0 || messageList.isEmpty
+                                ? Center(
+                                  child: Text("No Massage Available",
+                                  style: TextStyle(
+                                    fontSize: 20
+                                  ),),
+                                )
+                                :ListView.builder(
                                     itemCount: messageList.length,
                                     itemBuilder: (context, index) {
                                       return Align(
                                         alignment: userId == messageList[index].sender
                                             ? Alignment.topRight
                                             : Alignment.topLeft,
-                                          child: Text("${messageList[index].text}"));
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.deepOrangeAccent.shade100,
+                                                  borderRadius: userId == messageList[index].sender
+                                                    ? BorderRadius.only(bottomLeft: Radius.circular(20),topLeft: Radius.circular(20),topRight: Radius.circular(20))
+                                                      : BorderRadius.only(bottomRight: Radius.circular(20),topLeft: Radius.circular(20),topRight: Radius.circular(20))
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text("${messageList[index].text}"),
+                                                )),
+                                          ));
                                     })),
                             Expanded(
                                 flex: 11,
