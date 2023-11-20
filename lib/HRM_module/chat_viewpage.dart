@@ -352,6 +352,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
     messagesRef.onValue.listen((event) {
       var snapshot = event.snapshot;
 
+
       if (snapshot.value != null) {
         Map<dynamic, dynamic>? messages =
             snapshot.value as Map<dynamic, dynamic>?;
