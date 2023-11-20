@@ -218,10 +218,10 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                             Expanded(
                                 flex: 78,
                                 child: ListView.builder(
-                                  itemCount: messageList.length,
+                                    itemCount: messageList.length,
                                     itemBuilder: (context, index) {
-                                  return Text("${messageList[index].text}");
-                                })),
+                                      return Text("${messageList[index].text}");
+                                    })),
                             Expanded(
                                 flex: 11,
                                 child: Row(
@@ -324,7 +324,12 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
       print("${msgid}");
 
-      FirebaseDatabase.instance.ref().child('messages').child("${msgid}").push().set({
+      FirebaseDatabase.instance
+          .ref()
+          .child('messages')
+          .child("${msgid}")
+          .push()
+          .set({
         'text': text,
         'sender': userId, // replace this with the actual username
         'timestamp': DateTime.now().millisecondsSinceEpoch,
@@ -337,26 +342,24 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
     userId = prefs.getString('userId')!;
     String msgid = "${userId} ${rec}";
 
-    print('message key : '+msgid);
+    print('message key : ' + msgid);
 
-    DatabaseReference messagesRef = FirebaseDatabase.instance.ref('messages').child("${msgid}");
+    DatabaseReference messagesRef =
+        FirebaseDatabase.instance.ref('messages').child("${msgid}");
 
-    messagesRef.printError();   // print error
+    messagesRef.printError(); // print error
 
     messagesRef.onValue.listen((event) {
-
       var snapshot = event.snapshot;
 
       if (snapshot.value != null) {
         Map<dynamic, dynamic>? messages =
-        snapshot.value as Map<dynamic, dynamic>?;
+            snapshot.value as Map<dynamic, dynamic>?;
 
         if (messages != null) {
-
           messageList.clear();
 
           messages.forEach((key, value) {
-
             String text = value['text'];
             String sender = value['sender'];
             int timestamp = value['timestamp'];
@@ -367,10 +370,9 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
               timestamp: timestamp,
             );
 
-            print('message : '+message.text);
+            print('message : ' + message.text);
 
             messageList.add(message);
-
           });
         }
       } else {

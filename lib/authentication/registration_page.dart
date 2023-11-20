@@ -18,7 +18,7 @@ class Registration_page extends StatefulWidget {
 }
 
 class _Registration_pageState extends State<Registration_page> {
-  final datarefrence = FirebaseDatabase.instance.reference();
+  final datarefrence = FirebaseDatabase.instance.ref();
   String selectfile = '';
   late Uint8List selectedImageInBytes;
   String downloadURL= "";
@@ -28,7 +28,8 @@ class _Registration_pageState extends State<Registration_page> {
   TextEditingController passwordcontroller = TextEditingController();
   TextEditingController emailcontroller = TextEditingController();
 
-  void signUp() async {
+   signUp() async {
+
     final authServices = Provider.of<AuthServices>(context, listen: false);
 
     String name = namecontroller.text.toString();
@@ -72,9 +73,14 @@ class _Registration_pageState extends State<Registration_page> {
       );
     } else {
       try {
-        if(pic.isNotEmpty){
+        if(pic.isNotEmpty) {
           await authServices.signUpWithEmailandPassword(email, password);
-          int result = await resgidterData(name,email,password,mobile,pic);
+
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+
+          String userId = prefs.getString('userId')!;
+
+          int result = resgidterData(userId,name,email,password,mobile,pic);
 
           if(result==1)
             {
@@ -92,14 +98,14 @@ class _Registration_pageState extends State<Registration_page> {
     }
   }
 
-  Future<int> resgidterData(String name, String email, String password, String mobile,String pic) async {
+  int resgidterData(String userId,String name, String email, String password, String mobile,String pic)  {
+    final key = datarefrence.child("Users").push().key;
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("register");
 
-   String userId = prefs.getString('userId')!;
-
-    datarefrence.child("Users").child(userId!).set({
-      'id': userId,
+    datarefrence.child("Users").child(key!).set({
+      'key': key,
+      'uid': userId,
       'name': name,
       'email': email,
       // 'password': password,
