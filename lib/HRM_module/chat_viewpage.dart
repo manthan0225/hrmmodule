@@ -48,10 +48,12 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
   final auth = FirebaseAuth.instance;
   final ref = FirebaseDatabase.instance.ref("Users");
+  String userIdIs = "";
 
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
@@ -122,7 +124,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                   } else {
                                     // If the data has been successfully loaded
                                     userList = snapshot.data ?? [];
-
                                     return ListView.builder(
                                       itemCount: userList.length,
                                       itemBuilder: (context, index) {
@@ -220,7 +221,11 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                 child: ListView.builder(
                                     itemCount: messageList.length,
                                     itemBuilder: (context, index) {
-                                      return Text("${messageList[index].text}");
+                                      return Align(
+                                        alignment: userId == messageList[index].sender
+                                            ? Alignment.topRight
+                                            : Alignment.topLeft,
+                                          child: Text("${messageList[index].text}"));
                                     })),
                             Expanded(
                                 flex: 11,
