@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:hrmodules/authentication/forgot_password.dart';
 import 'package:hrmodules/authentication/registration_page.dart';
 import 'package:hrmodules/services/auth_service.dart';
 import 'package:provider/provider.dart';
@@ -145,11 +146,16 @@ class _Login_PageState extends State<Login_Page> {
                       SizedBox(
                         width: Get.width * 0.1,
                       ),
-                      const Text(
-                        "Forgot Password",
-                        style: TextStyle(
-                          color: Colors.indigo,
-                          fontSize: 20,
+                      InkWell(
+                        onTap: () {
+                          Get.to(ForgotPassword());
+                        },
+                        child: const Text(
+                          "Forgot Password",
+                          style: TextStyle(
+                            color: Colors.indigo,
+                            fontSize: 20,
+                          ),
                         ),
                       ),
                       SizedBox(

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hrmodules/authentication/login_page.dart';
 
@@ -32,6 +33,27 @@ class AuthServices extends ChangeNotifier {
   void signOut() {
     _firebaseAuth.signOut();
     Get.to(Login_Page());
+  }
+
+  int forgotPassword(TextEditingController email,BuildContext context)
+  {
+    try
+        {
+          _firebaseAuth.sendPasswordResetEmail(email: email.text.toString());
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Reset Password"),
+                backgroundColor: Colors.indigo),
+          );
+
+        }
+       on FirebaseAuthException catch(e)
+    {
+      print(e);
+
+    }
+    return 1;
+
   }
 
 
