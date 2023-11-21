@@ -36,13 +36,11 @@ class LeaveData {
 
 class EmpName {
   final String uid;
- final String name;
+  final String name;
   final String email;
   final String image;
   final DateTime lastActive;
   final bool isOnline;
-
-
 
   EmpName({
     required this.name,
@@ -51,10 +49,8 @@ class EmpName {
     required this.email,
     required this.lastActive,
     this.isOnline = false,
-
   });
 }
-
 
 class UserModel {
   final String id;
@@ -82,7 +78,9 @@ class UserModel {
   }
 
   static List<UserModel> fromMap(Map<String, Map<String, dynamic>> map) {
-    return map.entries.map((entry) => UserModel.fromJson(entry.key, entry.value)).toList();
+    return map.entries
+        .map((entry) => UserModel.fromJson(entry.key, entry.value))
+        .toList();
   }
 }
 
@@ -97,4 +95,3 @@ class Message {
     required this.timestamp,
   });
 }
-
