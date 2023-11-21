@@ -18,6 +18,7 @@ class Registration_page extends StatefulWidget {
 }
 
 class _Registration_pageState extends State<Registration_page> {
+
   final datarefrence = FirebaseDatabase.instance.ref();
   String selectfile = '';
   late Uint8List selectedImageInBytes;
@@ -28,93 +29,11 @@ class _Registration_pageState extends State<Registration_page> {
   TextEditingController passwordcontroller = TextEditingController();
   TextEditingController emailcontroller = TextEditingController();
 
-   signUp() async {
-
-    final authServices = Provider.of<AuthServices>(context, listen: false);
-
-    String name = namecontroller.text.toString();
-    String email = emailcontroller.text.toString();
-    String mobile = mobilecontroller.text.toString();
-    String password = passwordcontroller.text.toString();
-    String pic = downloadURL;
-
-    final emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
-    final passwordRegExp = RegExp(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$');
-
-    if (name.isEmpty || email.isEmpty || mobile.isEmpty || password.isEmpty ) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Please fill in all the fields."),
-          backgroundColor: Colors.indigo,
-        ),
-      );
-    } else if (!emailRegExp.hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Please enter a valid email address."),
-          backgroundColor: Colors.indigo,
-        ),
-      );
-    } else if (mobile.length != 10) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Mobile number should have exactly 10 digits."),
-          backgroundColor: Colors.indigo,
-        ),
-      );
-    } else if (!passwordRegExp.hasMatch(password)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "Please enter a valid password. It should be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
-          ),
-          backgroundColor: Colors.indigo,
-        ),
-      );
-    } else {
-      try {
-        if(pic.isNotEmpty) {
-          await authServices.signUpWithEmailandPassword(email, password);
-
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-
-          String userId = prefs.getString('userId')!;
-
-          int result = resgidterData(userId,name,email,password,mobile,pic);
-
-          if(result==1)
-            {
-              Get.to(Login_Page()); // Navigate to the login_page
-            }
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Colors.indigo,
-          ),
-        );
-      }
-    }
-  }
-
-  int resgidterData(String userId,String name, String email, String password, String mobile,String pic)  {
-    final key = datarefrence.child("Users").push().key;
-
-    print("register");
-
-    datarefrence.child("Users").child(key!).set({
-      'key': key,
-      'uid': userId,
-      'name': name,
-      'email': email,
-      // 'password': password,
-      'mobile': mobile,
-      'profil_pic' : pic
-    });
-
-    return 1;
-  }
+  String name = "";
+  String email = "";
+  String mobile = "";
+  String password = "";
+  String pic = "";
 
   bool isHidden = true;
 
@@ -226,15 +145,21 @@ class _Registration_pageState extends State<Registration_page> {
                   height: Get.height * 0.05,
                 ),
                 InkWell(
-                  onTap: () {
+                  onTap: () async {
                     if (namecontroller.text.isNotEmpty &&
                         emailcontroller.text.isNotEmpty &&
                         mobilecontroller.text.isNotEmpty &&
                         passwordcontroller.text.isNotEmpty &&
                         selectfile.isNotEmpty &&
                         selectedImageInBytes.isNotEmpty) {
-                      uploadFile();
-                      signUp();
+
+                      await uploadFile();
+                      await signUp();
+
+                      namecontroller.clear();
+                      emailcontroller.clear();
+                      mobilecontroller.clear();
+                      passwordcontroller.clear();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -393,4 +318,94 @@ class _Registration_pageState extends State<Registration_page> {
       print(e);
     }
   }
+
+
+  signUp() async {
+
+    final authServices = Provider.of<AuthServices>(context, listen: false);
+
+     name = namecontroller.text.toString();
+     email = emailcontroller.text.toString();
+     mobile = mobilecontroller.text.toString();
+     password = passwordcontroller.text.toString();
+     pic = downloadURL;
+
+    final emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    final passwordRegExp = RegExp(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$');
+
+    if (name.isEmpty || email.isEmpty || mobile.isEmpty || password.isEmpty ) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Please fill in all the fields."),
+          backgroundColor: Colors.indigo,
+        ),
+      );
+    } else if (!emailRegExp.hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Please enter a valid email address."),
+          backgroundColor: Colors.indigo,
+        ),
+      );
+    } else if (mobile.length != 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Mobile number should have exactly 10 digits."),
+          backgroundColor: Colors.indigo,
+        ),
+      );
+    } else if (!passwordRegExp.hasMatch(password)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Please enter a valid password. It should be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
+          ),
+          backgroundColor: Colors.indigo,
+        ),
+      );
+    } else {
+      try {
+        if(pic.isNotEmpty) {
+
+          final userData =await authServices.signUpWithEmailandPassword(email, password);
+
+          String? userId = userData.user?.uid;
+
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+
+          // String userId = prefs.getString('userId')!;
+
+          prefs.setString('userId', userId!);
+
+          if(userId != "" && name != "" && email != "" && mobile != "" && pic != "") {
+
+            datarefrence.child("Users").child(userId).set({
+              'id': userId,
+              'name': name,
+              'email': email,
+              // 'password': password,
+              'mobile': mobile,
+              'profil_pic': pic
+            });
+          }
+          Get.to(Login_Page()); // Navigate to the login_page
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  int resgidterData(String userId,String name, String email, String password, String mobile,String pic)  {
+
+    print("register");
+
+    return 1;
+  }
+
 }

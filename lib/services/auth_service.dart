@@ -22,6 +22,7 @@ class AuthServices extends ChangeNotifier {
       String email, String password) async {
     try {
       UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      // userCredential.user.uid //
 
       return userCredential;
     } on FirebaseAuthException catch (e) {
@@ -35,11 +36,11 @@ class AuthServices extends ChangeNotifier {
     Get.to(Login_Page());
   }
 
-  int forgotPassword(TextEditingController email,BuildContext context)
+  int forgotPassword(String emailFo,BuildContext context)
   {
     try
         {
-          _firebaseAuth.sendPasswordResetEmail(email: email.text.toString());
+          _firebaseAuth.sendPasswordResetEmail(email: emailFo);
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text("Reset Password"),

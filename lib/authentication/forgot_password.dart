@@ -60,12 +60,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ),
           InkWell(
             onTap: () {
-            final result =   authServices.forgotPassword(emailController, context);
-            if(result == 1)
-              {
-                Get.to(Login_Page());
-              }
-
+              setState(() {
+                final email = emailController.text.toString();
+                final result =  authServices.forgotPassword(email, context);
+                if(result == 1)
+                {
+                  Get.to(Login_Page());
+                }
+              });
             },
             child: Container(
               decoration: const BoxDecoration(

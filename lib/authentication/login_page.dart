@@ -60,14 +60,6 @@ class _Login_PageState extends State<Login_Page> {
       await authServices.signInWithEmailandPassword(
           emailController.text.toString(), passwordController.text.toString());
 
-     final userId = FirebaseAuth.instance.currentUser!.uid;
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      print(userId);
-
-      prefs.setString('userId', userId);
-
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
