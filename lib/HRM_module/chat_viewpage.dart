@@ -75,7 +75,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                   children: [
                     Expanded(
                         flex: 25,
-
                         child: Column(
                           children: [
                             Container(
@@ -126,11 +125,13 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                     return ListView.builder(
                                       itemCount: userList.length,
                                       itemBuilder: (context, index) {
-                                        bool shouldSkipItem = userList[index].email == useremail; // Replace 'John Doe' with the name you want to skip
+                                        bool shouldSkipItem = userList[index]
+                                                .email ==
+                                            useremail; // Replace 'John Doe' with the name you want to skip
                                         if (shouldSkipItem) {
-
                                           sendername = userList[index].name;
-                                          senderImg = userList[index].profil_pic;
+                                          senderImg =
+                                              userList[index].profil_pic;
 
                                           return SizedBox.shrink();
                                         } else {
@@ -155,24 +156,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                                             userList[index]
                                                                 .profil_pic),
                                                   ),
-                                                  Positioned(
-                                                    bottom: 0,
-                                                    right: 0,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 10),
-                                                      child: CircleAvatar(
-                                                        radius: 5,
-                                                        backgroundColor:
-                                                            // chatname[index]
-                                                            //         .isOnline
-                                                            //     ? Colors.green
-                                                            //     :
-                                                            Colors.grey,
-                                                      ),
-                                                    ),
-                                                  )
                                                 ],
                                               ),
                                               title: Text(
@@ -305,12 +288,12 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                         icon: Icon(Icons.send,
                                             color: Colors.black45),
                                         onPressed: () {
-                                         setState(() {
-
-                                         });
-                                          if (_typeAMessageController.text.isEmpty||
-                                              _typeAMessageController.text.toString() == "")
-                                          {
+                                          setState(() {});
+                                          if (_typeAMessageController
+                                                  .text.isEmpty ||
+                                              _typeAMessageController.text
+                                                      .toString() ==
+                                                  "") {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               SnackBar(
@@ -419,7 +402,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
     messagesRef.onValue.listen((event) {
       var snapshot = event.snapshot;
 
-
       if (snapshot.value != null) {
         Map<dynamic, dynamic>? messages =
             snapshot.value as Map<dynamic, dynamic>?;
@@ -451,13 +433,11 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
     RmessagesRef.onValue.listen((event) {
       var snapshot = event.snapshot;
 
-
       if (snapshot.value != null) {
         Map<dynamic, dynamic>? messages =
             snapshot.value as Map<dynamic, dynamic>?;
 
         if (messages != null) {
-
           messages.forEach((key, value) {
             String text = value['text'];
             String sender = value['sender'];
