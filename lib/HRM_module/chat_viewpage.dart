@@ -124,12 +124,8 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                                     userList[index].name;
                                                 receiverId = userList[index].id;
                                                 receiverImg = userList[index].profil_pic;
-
-                                                print("Receiver id : ${receiverId}");
+                                                getData(receiverId);
                                               });
-
-                                              getData(receiverId);
-
                                             },
                                             child: ListTile(
                                               leading: Stack(
@@ -272,7 +268,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                         icon: Icon(Icons.send,
                                             color: Colors.black45),
                                         onPressed: () {
-                                          setState(() {});
                                           if (_typeAMessageController
                                                   .text.isEmpty ||
                                               _typeAMessageController.text
@@ -287,6 +282,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                             );
                                           } else {
                                             sendMessage(receiverId);
+                                            getData(receiverId);
                                           }
                                         },
                                       ),
@@ -350,12 +346,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
       print("${msgid}");
 
-      FirebaseDatabase.instance
-          .ref()
-          .child('messages')
-          .child("${msgid}")
-          .push()
-          .set({
+      FirebaseDatabase.instance.ref().child('messages').child("${msgid}").push().set({
         'text': text,
         'sender': userId,
         'timestamp': DateTime.now().millisecondsSinceEpoch,
@@ -365,90 +356,85 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
   }
 
   void getData(String rec) async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    messageList.clear();
 
-    setState(() {
+    userId = prefs.getString('userId')!;
 
-      messageList.clear();
+    String msgid = "${userId} ${rec}";
 
-      userId = prefs.getString('userId')!;
+    String rmsgid = "${rec} ${userId}";
 
-      String msgid = "${userId} ${rec}";
+    print('message key : ' + msgid);
 
-      String rmsgid = "${rec} ${userId}";
+    DatabaseReference messagesRef =
+    FirebaseDatabase.instance.ref('messages').child("${msgid}");
 
-      print('message key : ' + msgid);
+    DatabaseReference RmessagesRef =
+    FirebaseDatabase.instance.ref('messages').child("${rmsgid}");
 
-      DatabaseReference messagesRef =
-      FirebaseDatabase.instance.ref('messages').child("${msgid}");
+    messagesRef.printError(); // print error
 
-      DatabaseReference RmessagesRef =
-      FirebaseDatabase.instance.ref('messages').child("${rmsgid}");
+    messagesRef.onValue.listen((event) {
+      var snapshot = event.snapshot;
 
-      messagesRef.printError(); // print error
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic>? messages =
+        snapshot.value as Map<dynamic, dynamic>?;
 
-      messagesRef.onValue.listen((event) {
-        var snapshot = event.snapshot;
+        if (messages != null) {
 
-        if (snapshot.value != null) {
-          Map<dynamic, dynamic>? messages =
-          snapshot.value as Map<dynamic, dynamic>?;
+          messages.forEach((key, value) {
+            String text = value['text'];
+            String sender = value['sender'];
+            int timestamp = value['timestamp'];
 
-          if (messages != null) {
+            Message message = Message(
+              text: text,
+              sender: sender,
+              timestamp: timestamp,
+            );
 
-            messages.forEach((key, value) {
-              String text = value['text'];
-              String sender = value['sender'];
-              int timestamp = value['timestamp'];
+            print('message : ' + message.text);
 
-              Message message = Message(
-                text: text,
-                sender: sender,
-                timestamp: timestamp,
-              );
-
-              print('message : ' + message.text);
-
-              messageList.add(message);
-            });
-          }
-        } else {
-          print(" message list No messages found.");
+            messageList.add(message);
+          });
         }
-      });
-
-      RmessagesRef.onValue.listen((event) {
-        var snapshot = event.snapshot;
-
-        if (snapshot.value != null) {
-          Map<dynamic, dynamic>? messages =
-          snapshot.value as Map<dynamic, dynamic>?;
-
-          if (messages != null) {
-            messages.forEach((key, value) {
-              String text = value['text'];
-              String sender = value['sender'];
-              int timestamp = value['timestamp'];
-
-              Message message = Message(
-                text: text,
-                sender: sender,
-                timestamp: timestamp,
-              );
-
-              print('message : ' + message.text);
-
-              messageList.add(message);
-            });
-          }
-          messageList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-        } else {
-          print(" message list No messages found.");
-        }
-      });
-
+      } else {
+        print(" message list No messages found.");
+      }
     });
 
+    RmessagesRef.onValue.listen((event) {
+      var snapshot = event.snapshot;
+
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic>? messages =
+        snapshot.value as Map<dynamic, dynamic>?;
+
+        if (messages != null) {
+          messages.forEach((key, value) {
+            String text = value['text'];
+            String sender = value['sender'];
+            int timestamp = value['timestamp'];
+
+            Message message = Message(
+              text: text,
+              sender: sender,
+              timestamp: timestamp,
+            );
+
+            print('message : ' + message.text);
+
+            messageList.add(message);
+          });
+        }
+        messageList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+      } else {
+        print(" message list No messages found.");
+      }
+    });
 
   }
 
