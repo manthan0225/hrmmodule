@@ -57,8 +57,14 @@ class _Login_PageState extends State<Login_Page> {
     final authServices = Provider.of<AuthServices>(context, listen: false);
 
     try {
-      await authServices.signInWithEmailandPassword(
+         final userData = await authServices.signInWithEmailandPassword(
           emailController.text.toString(), passwordController.text.toString());
+
+      final userId = userData.user!.uid ;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      prefs.setString('userId', userId.toString());
 
     } catch (e) {
       ScaffoldMessenger.of(context)

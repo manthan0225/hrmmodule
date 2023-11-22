@@ -369,13 +369,7 @@ class _Registration_pageState extends State<Registration_page> {
 
           final userData =await authServices.signUpWithEmailandPassword(email, password);
 
-          String? userId = userData.user?.uid;
-
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-
-          // String userId = prefs.getString('userId')!;
-
-          prefs.setString('userId', userId!);
+          final userId = userData.user!.uid;
 
           if(userId != "" && name != "" && email != "" && mobile != "" && pic != "") {
 

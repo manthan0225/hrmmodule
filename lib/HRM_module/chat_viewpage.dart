@@ -126,8 +126,10 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                                 receiverImg = userList[index].profil_pic;
 
                                                 print("Receiver id : ${receiverId}");
-                                                getData(receiverId);
                                               });
+
+                                              getData(receiverId);
+
                                             },
                                             child: ListTile(
                                               leading: Stack(
@@ -338,13 +340,10 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
   void sendMessage(String rec) async {
     if (_formKey.currentState!.validate()) {
-      // Here, you can retrieve the text from the TextFormField
+
       String text = _typeAMessageController.text;
 
-      _typeAMessageController.clear();
-
       SharedPreferences prefs = await SharedPreferences.getInstance();
-
       userId = prefs.getString('userId')!;
 
       String msgid = "${userId} ${rec}";
@@ -358,92 +357,103 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
           .push()
           .set({
         'text': text,
-        'sender': userId, // replace this with the actual username
+        'sender': userId,
         'timestamp': DateTime.now().millisecondsSinceEpoch,
       });
+      _typeAMessageController.clear();
     }
   }
 
   void getData(String rec) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getString('userId')!;
-    String msgid = "${userId} ${rec}";
 
-    String rmsgid = "${rec} ${userId}";
+    setState(() {
 
-    print('message key : ' + msgid);
+      messageList.clear();
 
-    DatabaseReference messagesRef =
-        FirebaseDatabase.instance.ref('messages').child("${msgid}");
+      userId = prefs.getString('userId')!;
 
-    DatabaseReference RmessagesRef =
-        FirebaseDatabase.instance.ref('messages').child("${rmsgid}");
+      String msgid = "${userId} ${rec}";
 
-    messagesRef.printError(); // print error
+      String rmsgid = "${rec} ${userId}";
 
-    messagesRef.onValue.listen((event) {
-      var snapshot = event.snapshot;
+      print('message key : ' + msgid);
 
-      if (snapshot.value != null) {
-        Map<dynamic, dynamic>? messages =
-            snapshot.value as Map<dynamic, dynamic>?;
+      DatabaseReference messagesRef =
+      FirebaseDatabase.instance.ref('messages').child("${msgid}");
 
-        if (messages != null) {
-          messageList.clear();
+      DatabaseReference RmessagesRef =
+      FirebaseDatabase.instance.ref('messages').child("${rmsgid}");
 
-          messages.forEach((key, value) {
-            String text = value['text'];
-            String sender = value['sender'];
-            int timestamp = value['timestamp'];
+      messagesRef.printError(); // print error
 
-            Message message = Message(
-              text: text,
-              sender: sender,
-              timestamp: timestamp,
-            );
+      messagesRef.onValue.listen((event) {
+        var snapshot = event.snapshot;
 
-            print('message : ' + message.text);
+        if (snapshot.value != null) {
+          Map<dynamic, dynamic>? messages =
+          snapshot.value as Map<dynamic, dynamic>?;
 
-            messageList.add(message);
-          });
+          if (messages != null) {
+
+            messages.forEach((key, value) {
+              String text = value['text'];
+              String sender = value['sender'];
+              int timestamp = value['timestamp'];
+
+              Message message = Message(
+                text: text,
+                sender: sender,
+                timestamp: timestamp,
+              );
+
+              print('message : ' + message.text);
+
+              messageList.add(message);
+            });
+          }
+        } else {
+          print(" message list No messages found.");
         }
-      } else {
-        print(" message list No messages found.");
-      }
+      });
+
+      RmessagesRef.onValue.listen((event) {
+        var snapshot = event.snapshot;
+
+        if (snapshot.value != null) {
+          Map<dynamic, dynamic>? messages =
+          snapshot.value as Map<dynamic, dynamic>?;
+
+          if (messages != null) {
+            messages.forEach((key, value) {
+              String text = value['text'];
+              String sender = value['sender'];
+              int timestamp = value['timestamp'];
+
+              Message message = Message(
+                text: text,
+                sender: sender,
+                timestamp: timestamp,
+              );
+
+              print('message : ' + message.text);
+
+              messageList.add(message);
+            });
+          }
+          messageList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+        } else {
+          print(" message list No messages found.");
+        }
+      });
+
     });
 
-    RmessagesRef.onValue.listen((event) {
-      var snapshot = event.snapshot;
 
-      if (snapshot.value != null) {
-        Map<dynamic, dynamic>? messages =
-            snapshot.value as Map<dynamic, dynamic>?;
-
-        if (messages != null) {
-          messages.forEach((key, value) {
-            String text = value['text'];
-            String sender = value['sender'];
-            int timestamp = value['timestamp'];
-
-            Message message = Message(
-              text: text,
-              sender: sender,
-              timestamp: timestamp,
-            );
-
-            print('message : ' + message.text);
-
-            messageList.add(message);
-          });
-        }
-        messageList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-      } else {
-        print(" message list No messages found.");
-      }
-    });
   }
 
   Future<List<UserModel>> loadUsersData() async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     useremail = prefs.getString('email') ?? '';
