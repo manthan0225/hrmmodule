@@ -14,7 +14,6 @@ class Chat_ViewPage extends StatefulWidget {
 }
 
 class _Chat_ViewPageState extends State<Chat_ViewPage> {
-
   final _formKey = GlobalKey<FormState>();
   TextEditingController _typeAMessageController = TextEditingController();
 
@@ -123,7 +122,8 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
                                                 receivername =
                                                     userList[index].name;
                                                 receiverId = userList[index].id;
-                                                receiverImg = userList[index].profil_pic;
+                                                receiverImg =
+                                                    userList[index].profil_pic;
                                                 getData(receiverId);
                                               });
                                             },
@@ -336,7 +336,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
   void sendMessage(String rec) async {
     if (_formKey.currentState!.validate()) {
-
       String text = _typeAMessageController.text;
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -344,9 +343,12 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
       String msgid = "${userId} ${rec}";
 
-      print("${msgid}");
-
-      FirebaseDatabase.instance.ref().child('messages').child("${msgid}").push().set({
+      FirebaseDatabase.instance
+          .ref()
+          .child('messages')
+          .child("${msgid}")
+          .push()
+          .set({
         'text': text,
         'sender': userId,
         'timestamp': DateTime.now().millisecondsSinceEpoch,
@@ -356,7 +358,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
   }
 
   void getData(String rec) async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     messageList.clear();
 
@@ -366,13 +367,11 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
     String rmsgid = "${rec} ${userId}";
 
-    print('message key : ' + msgid);
-
     DatabaseReference messagesRef =
-    FirebaseDatabase.instance.ref('messages').child("${msgid}");
+        FirebaseDatabase.instance.ref('messages').child("${msgid}");
 
     DatabaseReference RmessagesRef =
-    FirebaseDatabase.instance.ref('messages').child("${rmsgid}");
+        FirebaseDatabase.instance.ref('messages').child("${rmsgid}");
 
     messagesRef.printError(); // print error
 
@@ -381,10 +380,9 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
       if (snapshot.value != null) {
         Map<dynamic, dynamic>? messages =
-        snapshot.value as Map<dynamic, dynamic>?;
+            snapshot.value as Map<dynamic, dynamic>?;
 
         if (messages != null) {
-
           messages.forEach((key, value) {
             String text = value['text'];
             String sender = value['sender'];
@@ -395,9 +393,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
               sender: sender,
               timestamp: timestamp,
             );
-
-            print('message : ' + message.text);
-
             messageList.add(message);
           });
         }
@@ -411,7 +406,7 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
 
       if (snapshot.value != null) {
         Map<dynamic, dynamic>? messages =
-        snapshot.value as Map<dynamic, dynamic>?;
+            snapshot.value as Map<dynamic, dynamic>?;
 
         if (messages != null) {
           messages.forEach((key, value) {
@@ -424,22 +419,17 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
               sender: sender,
               timestamp: timestamp,
             );
-
-            print('message : ' + message.text);
-
             messageList.add(message);
           });
         }
         messageList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
       } else {
-        print(" message list No messages found.");
+        print("No messages found.");
       }
     });
-
   }
 
   Future<List<UserModel>> loadUsersData() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     useremail = prefs.getString('email') ?? '';
@@ -449,8 +439,6 @@ class _Chat_ViewPageState extends State<Chat_ViewPage> {
     try {
       ref.onValue.listen((event) {
         final data = event.snapshot.value;
-        print(data);
-
         if (data != null) {
           List<UserModel> userList = [];
           for (var entry in (data as Map<String, dynamic>).entries) {

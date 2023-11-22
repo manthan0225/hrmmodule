@@ -18,11 +18,10 @@ class Registration_page extends StatefulWidget {
 }
 
 class _Registration_pageState extends State<Registration_page> {
-
   final datarefrence = FirebaseDatabase.instance.ref();
   String selectfile = '';
   late Uint8List selectedImageInBytes;
-  String downloadURL= "";
+  String downloadURL = "";
 
   TextEditingController namecontroller = TextEditingController();
   TextEditingController mobilecontroller = TextEditingController();
@@ -152,7 +151,6 @@ class _Registration_pageState extends State<Registration_page> {
                         passwordcontroller.text.isNotEmpty &&
                         selectfile.isNotEmpty &&
                         selectedImageInBytes.isNotEmpty) {
-
                       await uploadFile();
                       await signUp();
 
@@ -290,7 +288,6 @@ class _Registration_pageState extends State<Registration_page> {
         selectedImageInBytes = fileresult.files.first.bytes!;
       });
     }
-    print(selectfile);
   }
 
   uploadFile() async {
@@ -307,8 +304,6 @@ class _Registration_pageState extends State<Registration_page> {
 
       uploadTask = ref.putData(selectedImageInBytes, metadata);
 
-      print(uploadTask);
-
       await uploadTask;
 
       downloadURL = await ref.getDownloadURL();
@@ -319,21 +314,19 @@ class _Registration_pageState extends State<Registration_page> {
     }
   }
 
-
   signUp() async {
-
     final authServices = Provider.of<AuthServices>(context, listen: false);
 
-     name = namecontroller.text.toString();
-     email = emailcontroller.text.toString();
-     mobile = mobilecontroller.text.toString();
-     password = passwordcontroller.text.toString();
-     pic = downloadURL;
+    name = namecontroller.text.toString();
+    email = emailcontroller.text.toString();
+    mobile = mobilecontroller.text.toString();
+    password = passwordcontroller.text.toString();
+    pic = downloadURL;
 
     final emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
     final passwordRegExp = RegExp(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$');
 
-    if (name.isEmpty || email.isEmpty || mobile.isEmpty || password.isEmpty ) {
+    if (name.isEmpty || email.isEmpty || mobile.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Please fill in all the fields."),
@@ -365,14 +358,17 @@ class _Registration_pageState extends State<Registration_page> {
       );
     } else {
       try {
-        if(pic.isNotEmpty) {
-
-          final userData =await authServices.signUpWithEmailandPassword(email, password);
+        if (pic.isNotEmpty) {
+          final userData =
+              await authServices.signUpWithEmailandPassword(email, password);
 
           final userId = userData.user!.uid;
 
-          if(userId != "" && name != "" && email != "" && mobile != "" && pic != "") {
-
+          if (userId != "" &&
+              name != "" &&
+              email != "" &&
+              mobile != "" &&
+              pic != "") {
             datarefrence.child("Users").child(userId).set({
               'id': userId,
               'name': name,
@@ -394,12 +390,4 @@ class _Registration_pageState extends State<Registration_page> {
       }
     }
   }
-
-  int resgidterData(String userId,String name, String email, String password, String mobile,String pic)  {
-
-    print("register");
-
-    return 1;
-  }
-
 }
