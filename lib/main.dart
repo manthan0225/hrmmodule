@@ -3,12 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hrmodules/services/auth_service.dart';
+import 'package:hrmodules/services/notification_Services.dart';
 import 'package:provider/provider.dart';
 import 'services/login_gate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+    name: 'name-here',
     options: FirebaseOptions(
         apiKey: "AIzaSyBDhpvD9RDWzwQCn2ZAFLEpKZLoslWGVsM",
         appId: "App id here",
@@ -32,6 +34,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+  final MessagingService messagingService = MessagingService();
   @override
   void initState() {
     _initializeFirebase();
@@ -44,6 +48,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    messagingService.init(context); // Initialize FCM
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: Login_Auth(),

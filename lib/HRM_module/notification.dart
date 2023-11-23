@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hrmodules/services/notification_Services.dart';
 
 class Notification_data extends StatefulWidget {
   const Notification_data({super.key});
@@ -9,7 +10,13 @@ class Notification_data extends StatefulWidget {
 }
 
 class _Notification_dataState extends State<Notification_data> {
+  final messagingServices = MessagingService();
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    messagingServices.init(context);
+  }
   Widget build(BuildContext context) {
     return MenuAnchor(
       builder:
@@ -56,7 +63,7 @@ class _Notification_dataState extends State<Notification_data> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(" people may not remember your app"),
+                        Text("people may not remember your app"),
                       ],
                     ),
                   ],

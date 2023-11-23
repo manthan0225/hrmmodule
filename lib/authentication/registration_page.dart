@@ -304,6 +304,8 @@ class _Registration_pageState extends State<Registration_page> {
 
       uploadTask = ref.putData(selectedImageInBytes, metadata);
 
+      print(uploadTask);
+
       await uploadTask;
 
       downloadURL = await ref.getDownloadURL();
